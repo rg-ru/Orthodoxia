@@ -69,13 +69,21 @@ export function normalizePreferences(rawPreferences = {}) {
   };
 }
 
-export function getSettingsModel(preferences, statusMessage = "") {
+export function getSettingsModel(preferences, statusMessage = "", sectionId = "") {
   const language = preferences.language;
+  const sections = settingsData.sections.map((section) => ({
+    ...section,
+    title: t(language, `settings.${section.key}`),
+    body: t(language, `settings.${section.bodyKey}`)
+  }));
+  const selectedSection = sections.find((section) => section.id === sectionId) ?? null;
 
   return {
     title: t(language, "settings.title"),
     body: t(language, "settings.body"),
     statusMessage,
+    selectedSection,
+    sections,
     preferences,
     account: settingsData.account,
     bibleTranslations: settingsData.bibleTranslations,
@@ -141,6 +149,8 @@ export function getSettingsModel(preferences, statusMessage = "") {
       aboutBody: t(language, "settings.about.body"),
       support: t(language, "settings.support"),
       supportBody: t(language, "settings.support.body"),
+      openSection: t(language, "settings.openSection"),
+      backToSettings: t(language, "settings.backToSettings"),
       future: t(language, "settings.future"),
       enabled: t(language, "settings.enabled"),
       disabled: t(language, "settings.disabled")

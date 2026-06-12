@@ -64,9 +64,16 @@ if (routeCount !== 6) {
 }
 
 const settingsData = await readFile(join(root, "src/features/settings/data/settingsData.js"), "utf8");
-for (const section of ["account", "futureLanguages", "aboutPages", "supportActions"]) {
+for (const section of ["sections", "account", "futureLanguages", "aboutPages", "supportActions"]) {
   if (!settingsData.includes(section)) {
     throw new Error(`Missing settings section ${section}`);
+  }
+}
+
+const settingsView = await readFile(join(root, "src/features/settings/presentation/settingsView.js"), "utf8");
+for (const marker of ["data-settings-section", "data-settings-back", "settings-section-card", "settings-subpage"]) {
+  if (!settingsView.includes(marker)) {
+    throw new Error(`Missing settings subpage marker ${marker}`);
   }
 }
 

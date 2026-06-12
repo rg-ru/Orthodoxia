@@ -6,6 +6,16 @@ export const settingsData = {
     email: "",
     futureAuth: ["Google Sign In", "Apple Sign In"]
   },
+  sections: [
+    { id: "account", key: "account", bodyKey: "account.body", iconName: "account_circle" },
+    { id: "appearance", key: "appearance", bodyKey: "appearance.body", iconName: "contrast" },
+    { id: "language", key: "language", bodyKey: "language.body", iconName: "language" },
+    { id: "notifications", key: "notifications", bodyKey: "notifications.body", iconName: "notifications" },
+    { id: "prayer-preferences", key: "prayerPreferences", bodyKey: "prayerPreferences.body", iconName: "volunteer_activism" },
+    { id: "app-settings", key: "appSettings", bodyKey: "appSettings.body", iconName: "settings_applications" },
+    { id: "about", key: "about", bodyKey: "about.body", iconName: "info" },
+    { id: "support", key: "support", bodyKey: "support.body", iconName: "help" }
+  ],
   bibleTranslations: [
     "Orthodox Study Bible",
     "King James Version",

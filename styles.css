@@ -335,6 +335,47 @@ button {
   gap: var(--space-16);
 }
 
+.settings-section-grid {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.settings-section-card {
+  width: 100%;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.settings-section-card:hover {
+  opacity: 0.88;
+}
+
+.settings-section-card:active {
+  transform: scale(0.98);
+}
+
+.settings-section-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.settings-subpage {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.settings-subpage-content {
+  display: grid;
+  gap: var(--space-16);
+}
+
 .settings-card {
   align-content: start;
 }
@@ -1025,6 +1066,10 @@ select:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .settings-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .prayer-category-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1092,6 +1137,10 @@ select:focus-visible {
   .setting-control,
   .profile-control {
     justify-content: flex-start;
+  }
+
+  .settings-section-action {
+    align-self: stretch;
   }
 
   .prayer-list-item {

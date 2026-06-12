@@ -38,6 +38,7 @@ const state = {
   aiQuestion: "",
   aiReflection: "",
   settingsMessage: "",
+  settingsSection: "",
   preferences: readPreferences()
 };
 
@@ -89,6 +90,9 @@ function navigate(routeId) {
   }
 
   state.route = routeId;
+  if (routeId === "settings") {
+    state.settingsSection = "";
+  }
   window.location.hash = routeId;
   render();
   document.querySelector("#main")?.focus({ preventScroll: true });
@@ -110,6 +114,24 @@ app.addEventListener("click", (event) => {
   const settingsActionTarget = event.target.closest("[data-settings-action]");
   if (settingsActionTarget) {
     handleSettingsAction(settingsActionTarget.dataset.settingsAction);
+    return;
+  }
+
+  const settingsSectionTarget = event.target.closest("[data-settings-section]");
+  if (settingsSectionTarget) {
+    state.settingsSection = settingsSectionTarget.dataset.settingsSection;
+    state.settingsMessage = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const settingsBackTarget = event.target.closest("[data-settings-back]");
+  if (settingsBackTarget) {
+    state.settingsSection = "";
+    state.settingsMessage = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
     return;
   }
 
