@@ -1,4 +1,4 @@
-import { getHomeModel } from "../domain/homeModel.js";
+import { getHomeModel } from "../domain/homeModel.js?v=9";
 import { icon, pageHeading, readingProgress } from "../../../shared/ui.js";
 import { escapeHtml, formatPercent } from "../../../shared/html.js";
 

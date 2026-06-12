@@ -1,4 +1,4 @@
-import { renderHome } from "./features/home/presentation/homeView.js";
+import { renderHome } from "./features/home/presentation/homeView.js?v=9";
 import { renderCalendar } from "./features/calendar/presentation/calendarView.js";
 import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookView.js";
 import { renderBible } from "./features/bible/presentation/bibleView.js";

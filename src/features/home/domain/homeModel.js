@@ -1,5 +1,5 @@
-import { homeData } from "../data/homeData.js";
-import { getLocale, t } from "../../../shared/i18n.js";
+import { homeData } from "../data/homeData.js?v=9";
+import { getLocale, t } from "../../../shared/i18n.js?v=9";
 
 function sectionFromData(section, language) {
   return {
