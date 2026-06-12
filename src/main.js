@@ -33,6 +33,8 @@ const state = {
   calendarSelectedDate: "",
   prayerCategoryId: "",
   prayerId: "",
+  saintsQuery: "",
+  saintId: "",
   aiQuestion: "",
   aiReflection: "",
   settingsMessage: "",
@@ -199,6 +201,22 @@ app.addEventListener("click", (event) => {
     return;
   }
 
+  const saintOpenTarget = event.target.closest("[data-saint-open]");
+  if (saintOpenTarget) {
+    state.saintId = saintOpenTarget.dataset.saintOpen;
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const saintsBackTarget = event.target.closest("[data-saints-back]");
+  if (saintsBackTarget) {
+    state.saintId = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
   const reflectionTarget = event.target.closest("[data-action='prepare-reflection']");
   if (reflectionTarget) {
     state.aiReflection = getAiReflection(state.aiQuestion, state.preferences.language);
@@ -212,6 +230,15 @@ app.addEventListener("input", (event) => {
     state.bibleQuery = event.target.value;
     render();
     const searchField = document.querySelector("[data-bible-search]");
+    searchField?.focus({ preventScroll: true });
+    searchField?.setSelectionRange(cursor, cursor);
+  }
+
+  if (event.target.matches("[data-saints-search]")) {
+    const cursor = event.target.selectionStart ?? event.target.value.length;
+    state.saintsQuery = event.target.value;
+    render();
+    const searchField = document.querySelector("[data-saints-search]");
     searchField?.focus({ preventScroll: true });
     searchField?.setSelectionRange(cursor, cursor);
   }

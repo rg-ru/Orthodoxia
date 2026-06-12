@@ -112,6 +112,20 @@ for (const marker of ["data-bible-book", "data-bible-chapter", "data-bible-open-
   }
 }
 
+const saintsData = await readFile(join(root, "src/features/saints/data/saintsData.js"), "utf8");
+for (const marker of ["Saint Seraphim of Sarov", "Saint Mary of Egypt", "Saint John Chrysostom", "Saint Nina of Georgia", "Saint Nicholas of Myra"]) {
+  if (!saintsData.includes(marker)) {
+    throw new Error(`Missing saint mock data marker ${marker}`);
+  }
+}
+
+const saintsView = await readFile(join(root, "src/features/saints/presentation/saintsView.js"), "utf8");
+for (const marker of ["data-saints-search", "data-saint-open", "data-saints-back", "saint-detail-card"]) {
+  if (!saintsView.includes(marker)) {
+    throw new Error(`Missing saints view marker ${marker}`);
+  }
+}
+
 const styles = await readFile(join(root, "styles.css"), "utf8");
 for (const color of ["#FFFFFF", "#F6F5F4", "#000000", "#615D59", "#DFDCD9", "#2383E2", "#191919", "#242424", "#B0B0B0"]) {
   if (!styles.includes(color)) {

@@ -866,6 +866,76 @@ button {
   gap: var(--space-8);
 }
 
+.saints-page,
+.saint-detail-page {
+  gap: var(--space-16);
+}
+
+.saints-search-card {
+  gap: var(--space-16);
+}
+
+.saint-list-grid {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.saint-list-card {
+  width: 100%;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.saint-list-card:hover {
+  opacity: 0.88;
+}
+
+.saint-list-card:active {
+  transform: scale(0.98);
+}
+
+.saint-card-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.saint-detail-page {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.saint-detail-card {
+  gap: var(--space-24);
+  padding: var(--space-48);
+}
+
+.saint-biography {
+  display: grid;
+  gap: var(--space-24);
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.saint-biography p {
+  margin: 0;
+  font-size: var(--reading-font-size);
+  line-height: 1.8;
+}
+
+.saint-quote-card blockquote {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--reading-font-size);
+  line-height: 1.8;
+}
+
 .bottom-nav {
   position: fixed;
   right: 0;
@@ -962,6 +1032,10 @@ select:focus-visible {
   .bible-book-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .saint-list-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 48rem) {
@@ -1047,6 +1121,14 @@ select:focus-visible {
   }
 
   .bible-reader-card {
+    padding: var(--space-24);
+  }
+
+  .saint-card-action {
+    align-self: stretch;
+  }
+
+  .saint-detail-card {
     padding: var(--space-24);
   }
 
