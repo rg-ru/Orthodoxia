@@ -98,6 +98,20 @@ for (const marker of ["data-prayer-category", "data-prayer-open", "data-prayer-b
   }
 }
 
+const bibleData = await readFile(join(root, "src/features/bible/data/bibleData.js"), "utf8");
+for (const marker of ["Genesis", "Psalms", "Matthew", "John", "Romans", "readingPlan"]) {
+  if (!bibleData.includes(marker)) {
+    throw new Error(`Missing bible mock data marker ${marker}`);
+  }
+}
+
+const bibleView = await readFile(join(root, "src/features/bible/presentation/bibleView.js"), "utf8");
+for (const marker of ["data-bible-book", "data-bible-chapter", "data-bible-open-book", "data-bible-back", "bible-reader-card"]) {
+  if (!bibleView.includes(marker)) {
+    throw new Error(`Missing bible view marker ${marker}`);
+  }
+}
+
 const styles = await readFile(join(root, "styles.css"), "utf8");
 for (const color of ["#FFFFFF", "#F6F5F4", "#000000", "#615D59", "#DFDCD9", "#2383E2", "#191919", "#242424", "#B0B0B0"]) {
   if (!styles.includes(color)) {

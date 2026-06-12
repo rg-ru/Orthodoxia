@@ -28,6 +28,8 @@ const app = document.querySelector("#app");
 const state = {
   route: getInitialRoute(),
   bibleQuery: "",
+  bibleBookId: "",
+  bibleChapterNumber: "",
   calendarSelectedDate: "",
   prayerCategoryId: "",
   prayerId: "",
@@ -125,6 +127,47 @@ app.addEventListener("click", (event) => {
     return;
   }
 
+  const bibleBookTarget = event.target.closest("[data-bible-book]");
+  if (bibleBookTarget) {
+    state.bibleBookId = bibleBookTarget.dataset.bibleBook;
+    state.bibleChapterNumber = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const bibleChapterTarget = event.target.closest("[data-bible-chapter]");
+  if (bibleChapterTarget) {
+    state.bibleChapterNumber = bibleChapterTarget.dataset.bibleChapter;
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const bibleOpenTarget = event.target.closest("[data-bible-open-book][data-bible-open-chapter]");
+  if (bibleOpenTarget) {
+    state.bibleBookId = bibleOpenTarget.dataset.bibleOpenBook;
+    state.bibleChapterNumber = bibleOpenTarget.dataset.bibleOpenChapter;
+    state.bibleQuery = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const bibleBackTarget = event.target.closest("[data-bible-back]");
+  if (bibleBackTarget) {
+    if (bibleBackTarget.dataset.bibleBack === "books") {
+      state.bibleBookId = "";
+      state.bibleChapterNumber = "";
+    } else {
+      state.bibleChapterNumber = "";
+    }
+
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
   const prayerCategoryTarget = event.target.closest("[data-prayer-category]");
   if (prayerCategoryTarget) {
     state.prayerCategoryId = prayerCategoryTarget.dataset.prayerCategory;
@@ -165,8 +208,12 @@ app.addEventListener("click", (event) => {
 
 app.addEventListener("input", (event) => {
   if (event.target.matches("[data-bible-search]")) {
+    const cursor = event.target.selectionStart ?? event.target.value.length;
     state.bibleQuery = event.target.value;
     render();
+    const searchField = document.querySelector("[data-bible-search]");
+    searchField?.focus({ preventScroll: true });
+    searchField?.setSelectionRange(cursor, cursor);
   }
 
   if (event.target.matches("[data-ai-question]")) {
