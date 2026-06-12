@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Orthodoxia icon</title>
+  <rect width="128" height="128" rx="24" fill="#191919"/>
+  <path d="M64 24v80M44 44h40M50 62h28" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M64 24v80M44 44h40M50 62h28" fill="none" stroke="#2383E2" stroke-width="3" stroke-linecap="round"/>
+</svg>

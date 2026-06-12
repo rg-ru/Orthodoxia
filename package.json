@@ -1,0 +1,11 @@
+{
+  "name": "orthodoxia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/smoke-test.mjs",
+    "build": "node scripts/build-static.mjs",
+    "check": "npm test && npm run build"
+  }
+}
