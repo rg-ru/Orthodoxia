@@ -1,26 +1,36 @@
 export const homeData = {
-  saint: {
-    title: "Venerable Onuphrius the Great",
-    body: "Remembered for hidden prayer, watchfulness, fasting, and quiet trust in God."
-  },
-  reading: {
-    title: "John 1:1-5",
-    body: "In the beginning was the Word, and the Word was with God, and the Word was God.",
-    progress: 32
-  },
-  fasting: {
-    title: "Fasting Status",
-    body: "Keep the parish calendar and the blessing of your spiritual father as the rule."
-  },
-  quote: {
-    title: "Daily Quote",
-    body: "Acquire the Spirit of peace, and thousands around you will be saved.",
-    author: "Saint Seraphim of Sarov"
+  sections: {
+    saint: {
+      iconName: "church",
+      eyebrowKey: "home.saint.eyebrow",
+      titleKey: "home.saint.title",
+      bodyKey: "home.saint.body"
+    },
+    reading: {
+      iconName: "auto_stories",
+      eyebrowKey: "home.reading.eyebrow",
+      titleKey: "home.reading.title",
+      bodyKey: "home.reading.body",
+      progress: 32
+    },
+    fasting: {
+      iconName: "restaurant",
+      eyebrowKey: "home.fasting.eyebrow",
+      titleKey: "home.fasting.title",
+      bodyKey: "home.fasting.body"
+    },
+    quote: {
+      iconName: "format_quote",
+      eyebrowKey: "home.quote.eyebrow",
+      titleKey: "home.quote.title",
+      bodyKey: "home.quote.body",
+      authorKey: "home.quote.author"
+    }
   },
   quickActions: [
-    { label: "Morning Prayers", iconName: "wb_twilight", route: "prayer" },
-    { label: "Read Scripture", iconName: "auto_stories", route: "bible" },
-    { label: "Saints", iconName: "church", route: "saints" },
-    { label: "Prepare a Question", iconName: "forum", route: "ai" }
+    { labelKey: "home.quick.morning", bodyKey: "home.quick.morning.body", iconName: "wb_twilight", route: "prayer" },
+    { labelKey: "home.quick.scripture", bodyKey: "home.quick.scripture.body", iconName: "auto_stories", route: "bible" },
+    { labelKey: "home.quick.saints", bodyKey: "home.quick.saints.body", iconName: "church", route: "saints" },
+    { labelKey: "home.quick.question", bodyKey: "home.quick.question.body", iconName: "forum", route: "ai" }
   ]
 };

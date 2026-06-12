@@ -63,6 +63,20 @@ if (routeCount !== 6) {
   throw new Error(`Expected 6 main tabs, found ${routeCount}`);
 }
 
+const homeData = await readFile(join(root, "src/features/home/data/homeData.js"), "utf8");
+for (const marker of ["sections", "saint", "reading", "fasting", "quote", "quickActions"]) {
+  if (!homeData.includes(marker)) {
+    throw new Error(`Missing home data marker ${marker}`);
+  }
+}
+
+const homeView = await readFile(join(root, "src/features/home/presentation/homeView.js"), "utf8");
+for (const marker of ["data-home-section", "home-card-grid", "home-action-button", "home-reading-progress"]) {
+  if (!homeView.includes(marker)) {
+    throw new Error(`Missing home view marker ${marker}`);
+  }
+}
+
 const settingsData = await readFile(join(root, "src/features/settings/data/settingsData.js"), "utf8");
 for (const section of ["sections", "account", "futureLanguages", "aboutPages", "supportActions"]) {
   if (!settingsData.includes(section)) {

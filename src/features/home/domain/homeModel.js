@@ -1,40 +1,36 @@
+import { homeData } from "../data/homeData.js";
 import { getLocale, t } from "../../../shared/i18n.js";
+
+function sectionFromData(section, language) {
+  return {
+    iconName: section.iconName,
+    eyebrow: t(language, section.eyebrowKey),
+    title: t(language, section.titleKey),
+    body: t(language, section.bodyKey),
+    progress: section.progress ?? 0,
+    author: section.authorKey ? t(language, section.authorKey) : ""
+  };
+}
 
 export function getHomeModel(language = "en") {
   return {
     labels: {
       title: t(language, "nav.home"),
-      saintOfDay: t(language, "home.saint.eyebrow"),
-      todaysReading: t(language, "home.reading.eyebrow"),
-      fastingStatus: t(language, "home.fasting.eyebrow"),
-      dailyQuote: t(language, "home.quote.eyebrow"),
       quickActions: t(language, "home.quick.eyebrow"),
-      beginAttention: t(language, "home.quick.title")
+      beginAttention: t(language, "home.quick.title"),
+      readingProgress: t(language, "home.reading.progress"),
+      open: t(language, "home.quick.open")
     },
-    saint: {
-      title: t(language, "home.saint.title"),
-      body: t(language, "home.saint.body")
-    },
-    reading: {
-      title: t(language, "home.reading.title"),
-      body: t(language, "home.reading.body"),
-      progress: 32
-    },
-    fasting: {
-      title: t(language, "home.fasting.title"),
-      body: t(language, "home.fasting.body")
-    },
-    quote: {
-      title: t(language, "home.quote.title"),
-      body: t(language, "home.quote.body"),
-      author: t(language, "home.quote.author")
-    },
-    quickActions: [
-      { label: t(language, "home.quick.morning"), iconName: "wb_twilight", route: "prayer" },
-      { label: t(language, "home.quick.scripture"), iconName: "auto_stories", route: "bible" },
-      { label: t(language, "home.quick.saints"), iconName: "church", route: "saints" },
-      { label: t(language, "home.quick.question"), iconName: "forum", route: "ai" }
-    ],
+    saint: sectionFromData(homeData.sections.saint, language),
+    reading: sectionFromData(homeData.sections.reading, language),
+    fasting: sectionFromData(homeData.sections.fasting, language),
+    quote: sectionFromData(homeData.sections.quote, language),
+    quickActions: homeData.quickActions.map((action) => ({
+      label: t(language, action.labelKey),
+      body: t(language, action.bodyKey),
+      iconName: action.iconName,
+      route: action.route
+    })),
     todayLabel: new Intl.DateTimeFormat(getLocale(language), {
       weekday: "long",
       month: "long",
