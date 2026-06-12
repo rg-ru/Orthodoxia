@@ -30,9 +30,9 @@ export function card({ eyebrow, title, body, iconName, className = "", content =
   `;
 }
 
-export function readingProgress(value) {
+export function readingProgress(value, label = "Reading progress") {
   return `
-    <div class="reading-progress" aria-label="Reading progress">
+    <div class="reading-progress" aria-label="${escapeHtml(label)}">
       <span style="--progress: ${formatPercent(value)}"></span>
     </div>
   `;

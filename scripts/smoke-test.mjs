@@ -84,6 +84,20 @@ for (const marker of ["calendar-grid", "data-calendar-day", "data-calendar-back"
   }
 }
 
+const prayerData = await readFile(join(root, "src/features/prayerBook/data/prayerData.js"), "utf8");
+for (const marker of ["Morning Prayers", "Evening Prayers", "Communion Prayers", "Thanksgiving Prayers", "Psalms"]) {
+  if (!prayerData.includes(marker)) {
+    throw new Error(`Missing prayer category ${marker}`);
+  }
+}
+
+const prayerView = await readFile(join(root, "src/features/prayerBook/presentation/prayerBookView.js"), "utf8");
+for (const marker of ["data-prayer-category", "data-prayer-open", "data-prayer-back", "prayer-reader-card"]) {
+  if (!prayerView.includes(marker)) {
+    throw new Error(`Missing prayer view marker ${marker}`);
+  }
+}
+
 const styles = await readFile(join(root, "styles.css"), "utf8");
 for (const color of ["#FFFFFF", "#F6F5F4", "#000000", "#615D59", "#DFDCD9", "#2383E2", "#191919", "#242424", "#B0B0B0"]) {
   if (!styles.includes(color)) {

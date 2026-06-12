@@ -29,6 +29,8 @@ const state = {
   route: getInitialRoute(),
   bibleQuery: "",
   calendarSelectedDate: "",
+  prayerCategoryId: "",
+  prayerId: "",
   aiQuestion: "",
   aiReflection: "",
   settingsMessage: "",
@@ -118,6 +120,37 @@ app.addEventListener("click", (event) => {
   const calendarBackTarget = event.target.closest("[data-calendar-back]");
   if (calendarBackTarget) {
     state.calendarSelectedDate = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const prayerCategoryTarget = event.target.closest("[data-prayer-category]");
+  if (prayerCategoryTarget) {
+    state.prayerCategoryId = prayerCategoryTarget.dataset.prayerCategory;
+    state.prayerId = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const prayerOpenTarget = event.target.closest("[data-prayer-open]");
+  if (prayerOpenTarget) {
+    state.prayerId = prayerOpenTarget.dataset.prayerOpen;
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const prayerBackTarget = event.target.closest("[data-prayer-back]");
+  if (prayerBackTarget) {
+    if (prayerBackTarget.dataset.prayerBack === "categories") {
+      state.prayerCategoryId = "";
+      state.prayerId = "";
+    } else {
+      state.prayerId = "";
+    }
+
     render();
     document.querySelector("#main")?.focus({ preventScroll: true });
     return;

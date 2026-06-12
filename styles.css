@@ -635,6 +635,110 @@ button {
   line-height: 1.4;
 }
 
+.prayer-page,
+.prayer-reader-page {
+  gap: var(--space-16);
+}
+
+.prayer-category-grid {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.prayer-category-card {
+  width: 100%;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.prayer-category-card:hover {
+  opacity: 0.88;
+}
+
+.prayer-category-card:active {
+  transform: scale(0.98);
+}
+
+.prayer-list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.prayer-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  min-height: var(--space-64);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--background);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.prayer-list-item:hover {
+  opacity: 0.88;
+}
+
+.prayer-list-item:active {
+  transform: scale(0.98);
+}
+
+.prayer-list-item > span:first-child {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.prayer-list-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.prayer-reader-page {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.prayer-reader-card {
+  gap: var(--space-24);
+  padding: var(--space-48);
+}
+
+.prayer-reader-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.prayer-reader-text {
+  display: grid;
+  gap: var(--space-24);
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.prayer-reader-text p {
+  margin: 0;
+  font-size: var(--reading-font-size);
+  line-height: 1.8;
+}
+
+.prayer-reader-progress {
+  display: grid;
+  gap: var(--space-8);
+}
+
 .bottom-nav {
   position: fixed;
   right: 0;
@@ -723,6 +827,10 @@ select:focus-visible {
   .settings-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .prayer-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 48rem) {
@@ -781,6 +889,20 @@ select:focus-visible {
     justify-content: flex-start;
   }
 
+  .prayer-list-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .prayer-list-action {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
+  .prayer-reader-card {
+    padding: var(--space-24);
+  }
+
   .nav-item {
     font-size: 14px;
   }
@@ -810,7 +932,8 @@ select:focus-visible {
   .setting-time,
   .segmented-control,
   .toggle-track,
-  .calendar-day {
+  .calendar-day,
+  .prayer-list-item {
     border: 1px solid var(--text-primary);
   }
 }
