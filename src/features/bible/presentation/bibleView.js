@@ -3,13 +3,13 @@ import { card, pageHeading, quietList, readingProgress } from "../../../shared/u
 import { escapeHtml } from "../../../shared/html.js";
 
 export function renderBible(state) {
-  const model = getBibleModel(state.bibleQuery);
+  const model = getBibleModel(state.bibleQuery, state.preferences.language);
 
   return `
     <section class="page">
       ${pageHeading(model.overview.title, model.overview.body)}
       ${card({
-        eyebrow: "Reading",
+        eyebrow: model.labels.reading,
         title: model.passage.title,
         iconName: "auto_stories",
         className: "reading-card",
@@ -19,12 +19,12 @@ export function renderBible(state) {
         `
       })}
       ${card({
-        eyebrow: "Bible Search",
-        title: "Search Scripture",
+        eyebrow: model.labels.searchEyebrow,
+        title: model.labels.searchTitle,
         iconName: "search",
         content: `
-          <label class="sr-only" for="bible-search">Search Scripture</label>
-          <input class="search-field" id="bible-search" data-bible-search value="${escapeHtml(model.query)}" placeholder="Search by book, phrase, or theme">
+          <label class="sr-only" for="bible-search">${escapeHtml(model.labels.searchTitle)}</label>
+          <input class="search-field" id="bible-search" data-bible-search value="${escapeHtml(model.query)}" placeholder="${escapeHtml(model.labels.searchPlaceholder)}">
           ${quietList(model.results)}
         `
       })}

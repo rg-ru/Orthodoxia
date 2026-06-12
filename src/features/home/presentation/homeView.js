@@ -2,20 +2,20 @@ import { getHomeModel } from "../domain/homeModel.js";
 import { actionButton, card, pageHeading, readingProgress } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 
-export function renderHome() {
-  const model = getHomeModel();
+export function renderHome(state) {
+  const model = getHomeModel(state.preferences.language);
 
   return `
     <section class="page">
-      ${pageHeading("Home", model.todayLabel)}
+      ${pageHeading(model.labels.title, model.todayLabel)}
       ${card({
-        eyebrow: "Saint of the Day",
+        eyebrow: model.labels.saintOfDay,
         title: model.saint.title,
         body: model.saint.body,
         iconName: "church"
       })}
       ${card({
-        eyebrow: "Today's Reading",
+        eyebrow: model.labels.todaysReading,
         title: model.reading.title,
         iconName: "auto_stories",
         className: "reading-card",
@@ -25,20 +25,20 @@ export function renderHome() {
         `
       })}
       ${card({
-        eyebrow: "Fasting Status",
+        eyebrow: model.labels.fastingStatus,
         title: model.fasting.title,
         body: model.fasting.body,
         iconName: "restaurant"
       })}
       ${card({
-        eyebrow: "Daily Quote",
+        eyebrow: model.labels.dailyQuote,
         title: model.quote.title,
         body: `${model.quote.body} - ${model.quote.author}`,
         iconName: "format_quote"
       })}
       ${card({
-        eyebrow: "Quick Actions",
-        title: "Begin with attention",
+        eyebrow: model.labels.quickActions,
+        title: model.labels.beginAttention,
         iconName: "apps",
         content: `
           <div class="action-grid">

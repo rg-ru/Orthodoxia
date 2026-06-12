@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url).pathname;
-const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai"];
+const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai", "settings"];
 const requiredLayers = ["presentation", "domain", "data"];
 const requiredFiles = [
   "index.html",
@@ -58,9 +58,16 @@ for (const feature of requiredFeatures) {
 }
 
 const main = await readFile(join(root, "src/main.js"), "utf8");
-const routeCount = (main.match(/label:/g) || []).length;
+const routeCount = (main.match(/labelKey:/g) || []).length;
 if (routeCount !== 6) {
   throw new Error(`Expected 6 main tabs, found ${routeCount}`);
+}
+
+const settingsData = await readFile(join(root, "src/features/settings/data/settingsData.js"), "utf8");
+for (const section of ["account", "futureLanguages", "aboutPages", "supportActions"]) {
+  if (!settingsData.includes(section)) {
+    throw new Error(`Missing settings section ${section}`);
+  }
 }
 
 const styles = await readFile(join(root, "styles.css"), "utf8");

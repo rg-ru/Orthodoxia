@@ -1,4 +1,4 @@
-const CACHE_NAME = "orthodoxia-v2";
+const CACHE_NAME = "orthodoxia-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const APP_SHELL = [
   "./manifest.webmanifest",
   "./assets/icon.svg",
   "./src/main.js",
+  "./src/shared/i18n.js",
   "./src/shared/html.js",
   "./src/shared/ui.js",
   "./src/features/home/data/homeData.js",
@@ -25,7 +26,10 @@ const APP_SHELL = [
   "./src/features/saints/presentation/saintsView.js",
   "./src/features/ai/data/aiData.js",
   "./src/features/ai/domain/aiModel.js",
-  "./src/features/ai/presentation/aiView.js"
+  "./src/features/ai/presentation/aiView.js",
+  "./src/features/settings/data/settingsData.js",
+  "./src/features/settings/domain/settingsModel.js",
+  "./src/features/settings/presentation/settingsView.js"
 ];
 
 self.addEventListener("install", (event) => {
