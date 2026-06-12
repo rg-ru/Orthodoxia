@@ -2,7 +2,7 @@
 
 Orthodoxia is a calm digital Orthodox companion for prayer, reading, learning, and spiritual growth.
 
-Live site, once GitHub Pages finishes deployment:
+Live site:
 
 https://rg-ru.github.io/Orthodoxia/
 
