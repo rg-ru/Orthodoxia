@@ -70,6 +70,20 @@ for (const section of ["account", "futureLanguages", "aboutPages", "supportActio
   }
 }
 
+const calendarData = await readFile(join(root, "src/features/calendar/data/calendarData.js"), "utf8");
+for (const marker of ["monthIndex", "feasts", "fasting", "readings"]) {
+  if (!calendarData.includes(marker)) {
+    throw new Error(`Missing calendar mock data marker ${marker}`);
+  }
+}
+
+const calendarView = await readFile(join(root, "src/features/calendar/presentation/calendarView.js"), "utf8");
+for (const marker of ["calendar-grid", "data-calendar-day", "data-calendar-back"]) {
+  if (!calendarView.includes(marker)) {
+    throw new Error(`Missing calendar view marker ${marker}`);
+  }
+}
+
 const styles = await readFile(join(root, "styles.css"), "utf8");
 for (const color of ["#FFFFFF", "#F6F5F4", "#000000", "#615D59", "#DFDCD9", "#2383E2", "#191919", "#242424", "#B0B0B0"]) {
   if (!styles.includes(color)) {

@@ -499,6 +499,124 @@ button {
   box-shadow: var(--shadow);
 }
 
+.calendar-page,
+.calendar-detail-page {
+  gap: var(--space-16);
+}
+
+.calendar-card {
+  gap: var(--space-16);
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.calendar-legend .material-symbols-rounded {
+  width: var(--space-16);
+  height: var(--space-16);
+  font-size: 16px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+
+.calendar-weekday {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.calendar-day,
+.calendar-day-empty {
+  min-height: calc(var(--space-64) + var(--space-32));
+  border-radius: var(--radius-card);
+}
+
+.calendar-day {
+  display: grid;
+  align-content: start;
+  gap: var(--space-8);
+  padding: var(--space-12);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: var(--background);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--duration) ease, border-color var(--duration) ease, transform var(--duration) ease;
+}
+
+.calendar-day:hover {
+  border-color: var(--border);
+}
+
+.calendar-day:active {
+  transform: scale(0.98);
+}
+
+.calendar-day.is-today {
+  border-color: var(--accent);
+}
+
+.calendar-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-32);
+  height: var(--space-32);
+  border-radius: var(--space-32);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.calendar-day.is-today .calendar-day-number {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+
+.calendar-day-title {
+  max-width: 100%;
+  min-height: var(--space-32);
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.calendar-indicators {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.calendar-dot {
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--space-8);
+}
+
+.feast-dot {
+  background: var(--accent);
+}
+
+.fast-dot {
+  border: 1px solid var(--text-secondary);
+  background: transparent;
+}
+
+.back-button {
+  width: fit-content;
+}
+
 .segmented-row {
   display: flex;
   flex-wrap: wrap;
@@ -575,7 +693,8 @@ button {
 
 button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: var(--space-4);
 }
@@ -619,8 +738,37 @@ textarea:focus-visible {
     padding: var(--space-16);
   }
 
+  .calendar-card {
+    padding: var(--space-12);
+  }
+
   .action-grid {
     grid-template-columns: 1fr;
+  }
+
+  .calendar-grid {
+    gap: var(--space-4);
+  }
+
+  .calendar-day,
+  .calendar-day-empty {
+    min-height: var(--space-64);
+  }
+
+  .calendar-day {
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .calendar-day-number {
+    width: var(--space-24);
+    height: var(--space-24);
+    font-size: 14px;
+  }
+
+  .calendar-day-title {
+    display: none;
+    max-width: 0;
   }
 
   .setting-row,
@@ -661,7 +809,8 @@ textarea:focus-visible {
   .setting-select,
   .setting-time,
   .segmented-control,
-  .toggle-track {
+  .toggle-track,
+  .calendar-day {
     border: 1px solid var(--text-primary);
   }
 }

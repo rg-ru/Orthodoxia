@@ -28,6 +28,7 @@ const app = document.querySelector("#app");
 const state = {
   route: getInitialRoute(),
   bibleQuery: "",
+  calendarSelectedDate: "",
   aiQuestion: "",
   aiReflection: "",
   settingsMessage: "",
@@ -103,6 +104,22 @@ app.addEventListener("click", (event) => {
   const settingsActionTarget = event.target.closest("[data-settings-action]");
   if (settingsActionTarget) {
     handleSettingsAction(settingsActionTarget.dataset.settingsAction);
+    return;
+  }
+
+  const calendarDayTarget = event.target.closest("[data-calendar-day]");
+  if (calendarDayTarget) {
+    state.calendarSelectedDate = calendarDayTarget.dataset.calendarDay;
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const calendarBackTarget = event.target.closest("[data-calendar-back]");
+  if (calendarBackTarget) {
+    state.calendarSelectedDate = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
     return;
   }
 
