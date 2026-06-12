@@ -4,7 +4,7 @@ import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookV
 import { renderBible } from "./features/bible/presentation/bibleView.js";
 import { renderSaints } from "./features/saints/presentation/saintsView.js";
 import { renderAi } from "./features/ai/presentation/aiView.js";
-import { getAiReflection } from "./features/ai/domain/aiModel.js";
+import { getMockAiResponse } from "./features/ai/domain/aiModel.js";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
 import { t } from "./shared/i18n.js";
@@ -35,8 +35,8 @@ const state = {
   prayerId: "",
   saintsQuery: "",
   saintId: "",
-  aiQuestion: "",
-  aiReflection: "",
+  aiDraft: "",
+  aiMessages: [],
   settingsMessage: "",
   settingsSection: "",
   preferences: readPreferences()
@@ -239,10 +239,22 @@ app.addEventListener("click", (event) => {
     return;
   }
 
-  const reflectionTarget = event.target.closest("[data-action='prepare-reflection']");
-  if (reflectionTarget) {
-    state.aiReflection = getAiReflection(state.aiQuestion, state.preferences.language);
-    render();
+  const aiPromptTarget = event.target.closest("[data-ai-prompt]");
+  if (aiPromptTarget) {
+    sendAiMessage(aiPromptTarget.dataset.aiPrompt);
+    return;
+  }
+
+  const aiSendTarget = event.target.closest("[data-ai-send]");
+  if (aiSendTarget) {
+    sendAiMessage();
+  }
+});
+
+app.addEventListener("keydown", (event) => {
+  if (event.target.matches("[data-ai-input]") && event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendAiMessage(event.target.value);
   }
 });
 
@@ -265,8 +277,12 @@ app.addEventListener("input", (event) => {
     searchField?.setSelectionRange(cursor, cursor);
   }
 
-  if (event.target.matches("[data-ai-question]")) {
-    state.aiQuestion = event.target.value;
+  if (event.target.matches("[data-ai-input]")) {
+    state.aiDraft = event.target.value;
+    const sendButton = document.querySelector("[data-ai-send]");
+    if (sendButton) {
+      sendButton.disabled = !state.aiDraft.trim();
+    }
   }
 
   if (event.target.matches("[data-setting-input]")) {
@@ -350,6 +366,32 @@ function applyPreferences(preferences) {
 
   document.documentElement.dataset.textSize = preferences.textSize;
   document.documentElement.lang = preferences.language;
+}
+
+function sendAiMessage(message = state.aiDraft) {
+  const cleanMessage = message.trim();
+  if (!cleanMessage) {
+    return;
+  }
+
+  state.aiMessages = [
+    ...state.aiMessages,
+    { role: "user", text: cleanMessage },
+    { role: "assistant", text: getMockAiResponse(cleanMessage, state.preferences.language) }
+  ];
+  state.aiDraft = "";
+  render();
+  focusAiInput();
+}
+
+function focusAiInput() {
+  const input = document.querySelector("[data-ai-input]");
+  if (!input) {
+    return;
+  }
+
+  input.focus({ preventScroll: true });
+  input.setSelectionRange(input.value.length, input.value.length);
 }
 
 async function handleSettingsAction(action) {

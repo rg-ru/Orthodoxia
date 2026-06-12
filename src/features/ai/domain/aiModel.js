@@ -1,3 +1,4 @@
+import { aiData } from "../data/aiData.js";
 import { t } from "../../../shared/i18n.js";
 
 export function getAiModel(language = "en") {
@@ -11,6 +12,14 @@ export function getAiModel(language = "en") {
       prepare: t(language, "ai.prepare"),
       placeholder: t(language, "ai.placeholder"),
       button: t(language, "ai.button"),
+      welcomeTitle: t(language, "ai.welcome.title"),
+      welcomeBody: t(language, "ai.welcome.body"),
+      chatLabel: t(language, "ai.chat.label"),
+      inputLabel: t(language, "ai.input.label"),
+      send: t(language, "ai.send"),
+      assistant: t(language, "ai.assistant"),
+      user: t(language, "ai.user"),
+      mockNotice: t(language, "ai.mock.notice"),
       guardrails: t(language, "ai.guardrails"),
       use: t(language, "ai.use"),
       prompts: t(language, "ai.prompts"),
@@ -21,19 +30,20 @@ export function getAiModel(language = "en") {
       { title: t(language, "ai.sources"), body: t(language, "ai.sources.body") },
       { title: t(language, "ai.urgency"), body: t(language, "ai.urgency.body") }
     ],
-    prompts: [
-      t(language, "ai.prompt.priest"),
-      t(language, "ai.prompt.prayer"),
-      t(language, "ai.prompt.catechism")
-    ]
+    prompts: aiData.welcomePrompts.map((prompt) => t(language, prompt.key))
   };
 }
 
-export function getAiReflection(question, language = "en") {
-  const cleanQuestion = question.trim();
-  if (!cleanQuestion) {
+export function getMockAiResponse(message, language = "en") {
+  const cleanMessage = message.trim();
+  if (!cleanMessage) {
     return t(language, "ai.empty");
   }
 
-  return `${t(language, "ai.prepared")} ${cleanQuestion} ${t(language, "ai.guidance")}`;
+  const normalizedMessage = cleanMessage.toLowerCase();
+  const topic = aiData.responseTopics.find((item) =>
+    item.keywords.some((keyword) => normalizedMessage.includes(keyword))
+  );
+
+  return t(language, topic?.responseKey ?? "ai.mock.default");
 }

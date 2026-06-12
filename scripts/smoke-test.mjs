@@ -133,6 +133,13 @@ for (const marker of ["data-saints-search", "data-saint-open", "data-saints-back
   }
 }
 
+const aiView = await readFile(join(root, "src/features/ai/presentation/aiView.js"), "utf8");
+for (const marker of ["data-ai-input", "data-ai-send", "data-ai-prompt", "ai-message-bubble", "ai-welcome"]) {
+  if (!aiView.includes(marker)) {
+    throw new Error(`Missing AI assistant marker ${marker}`);
+  }
+}
+
 const styles = await readFile(join(root, "styles.css"), "utf8");
 for (const color of ["#FFFFFF", "#F6F5F4", "#000000", "#615D59", "#DFDCD9", "#2383E2", "#191919", "#242424", "#B0B0B0"]) {
   if (!styles.includes(color)) {

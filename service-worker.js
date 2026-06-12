@@ -1,4 +1,4 @@
-const CACHE_NAME = "orthodoxia-v6";
+const CACHE_NAME = "orthodoxia-v7";
 const APP_SHELL = [
   "./",
   "./index.html",
