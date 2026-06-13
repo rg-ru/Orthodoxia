@@ -1,4 +1,4 @@
-import { getSettingsModel } from "../domain/settingsModel.js";
+import { getSettingsModel } from "../domain/settingsModel.js?v=16";
 import { escapeHtml } from "../../../shared/html.js";
 import { icon, pageHeading } from "../../../shared/ui.js";
 
@@ -262,15 +262,26 @@ function renderAccountSection(model) {
   const avatar = preferences.profilePicture
     ? `<img src="${escapeHtml(preferences.profilePicture)}" alt="${escapeHtml(labels.profilePicture)}">`
     : icon("account_circle");
+  const accountLabel = model.account.isGuest
+    ? labels.guestAccount
+    : model.account.isLoggedIn
+    ? labels.connectedAccount
+    : labels.accountBody;
 
   return sectionCard({
     iconName: "account_circle",
     title: labels.account,
     content: `
+      <p class="meta-line">${escapeHtml(accountLabel)}</p>
       <div class="settings-action-row">
-        ${action(labels.signIn, "sign-in", "login")}
-        ${action(labels.createAccount, "create-account", "person_add")}
-        ${action(labels.continueOffline, "continue-offline", "cloud_off")}
+        ${model.account.isLoggedIn ? `
+          ${action(labels.signOut, "sign-out", "logout")}
+        ` : `
+          ${action(labels.signInWithGoogle, "google-sign-in", "login")}
+          ${action(labels.signIn, "sign-in", "mail")}
+          ${action(labels.createAccount, "create-account", "person_add")}
+          ${action(labels.continueOffline, "continue-offline", "cloud_off")}
+        `}
       </div>
       ${row({
         label: labels.profilePicture,
@@ -321,9 +332,11 @@ function renderAccountSection(model) {
           options: model.prayerLanguages.map((language) => ({ value: language, label: language }))
         })
       })}
-      <div class="segmented-row">
-        ${model.account.futureAuth.map((provider) => `<span class="small-pill">${escapeHtml(labels.future)}: ${escapeHtml(provider)}</span>`).join("")}
-      </div>
+      ${model.account.futureAuth.length ? `
+        <div class="segmented-row">
+          ${model.account.futureAuth.map((provider) => `<span class="small-pill">${escapeHtml(labels.future)}: ${escapeHtml(provider)}</span>`).join("")}
+        </div>
+      ` : ""}
     `
   });
 }

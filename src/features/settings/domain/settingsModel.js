@@ -1,5 +1,5 @@
-import { supportedLanguages, t } from "../../../shared/i18n.js";
-import { settingsData } from "../data/settingsData.js";
+import { supportedLanguages, t } from "../../../shared/i18n.js?v=16";
+import { settingsData } from "../data/settingsData.js?v=16";
 
 export const PREFERENCES_KEY = "orthodoxia-preferences";
 
@@ -85,7 +85,11 @@ export function getSettingsModel(preferences, statusMessage = "", sectionId = ""
     selectedSection,
     sections,
     preferences,
-    account: settingsData.account,
+    account: {
+      ...settingsData.account,
+      isLoggedIn: preferences.accountMode === "online" || preferences.accountMode === "guest",
+      isGuest: preferences.accountMode === "guest"
+    },
     bibleTranslations: settingsData.bibleTranslations,
     prayerLanguages: settingsData.prayerLanguages,
     futureLanguages: settingsData.futureLanguages,
@@ -105,6 +109,10 @@ export function getSettingsModel(preferences, statusMessage = "", sectionId = ""
       accountBody: t(language, "settings.account.body"),
       signIn: t(language, "settings.signIn"),
       createAccount: t(language, "settings.createAccount"),
+      signInWithGoogle: t(language, "settings.signInWithGoogle"),
+      signOut: t(language, "settings.signOut"),
+      guestAccount: t(language, "settings.guestAccount"),
+      connectedAccount: t(language, "settings.connectedAccount"),
       continueOffline: t(language, "settings.continueOffline"),
       displayName: t(language, "settings.displayName"),
       email: t(language, "settings.email"),
@@ -165,6 +173,22 @@ export function getSettingsMessage(language, action) {
 
   if (action === "clear-cache") {
     return t(language, "settings.cacheCleared");
+  }
+
+  if (action === "google-sign-in") {
+    return t(language, "settings.googleSignInStarted");
+  }
+
+  if (action === "sign-out") {
+    return t(language, "settings.signedOut");
+  }
+
+  if (action === "auth-not-configured") {
+    return t(language, "settings.authNotConfigured");
+  }
+
+  if (action === "auth-error") {
+    return t(language, "settings.authError");
   }
 
   if (action === "sign-in" || action === "create-account") {

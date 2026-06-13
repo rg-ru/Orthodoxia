@@ -39,9 +39,10 @@ In the Supabase dashboard:
 
 1. Enable the Email provider under Authentication.
 2. Keep Magic Link or OTP enabled for email login.
-3. Enable Anonymous Sign-Ins.
-4. Set the Site URL to the production app URL.
-5. Add local and production redirect URLs:
+3. Enable Google under Authentication providers.
+4. Enable Anonymous Sign-Ins.
+5. Set the Site URL to the production app URL.
+6. Add local and production redirect URLs:
    - `https://rg-ru.github.io/Orthodoxia/`
    - `http://localhost:4198/`
    - `http://localhost:4199/`
@@ -60,8 +61,8 @@ Configure the app with either a global object:
 ```html
 <script>
   window.ORTHODOXIA_SUPABASE = {
-    url: "https://your-project.supabase.co",
-    anonKey: "your-publishable-anon-key"
+    url: "https://txspopmkxaklvoufxmiz.supabase.co",
+    publishableKey: "your-publishable-anon-key"
   };
 </script>
 ```
@@ -69,6 +70,6 @@ Configure the app with either a global object:
 or meta tags:
 
 ```html
-<meta name="orthodoxia-supabase-url" content="https://your-project.supabase.co">
-<meta name="orthodoxia-supabase-anon-key" content="your-publishable-anon-key">
+<meta name="orthodoxia-supabase-url" content="https://txspopmkxaklvoufxmiz.supabase.co">
+<meta name="orthodoxia-supabase-publishable-key" content="your-publishable-anon-key">
 ```

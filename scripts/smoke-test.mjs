@@ -72,6 +72,12 @@ for (const marker of ["renderSearch", "data-route=\"search\"", "data-search-resu
   }
 }
 
+for (const marker of ["authRepository", "handleGoogleSignIn", "signInWithGoogle", "initializeAuth", "isSupabaseConfigured"]) {
+  if (!main.includes(marker)) {
+    throw new Error(`Missing Google auth app marker ${marker}`);
+  }
+}
+
 const homeData = await readFile(join(root, "src/features/home/data/homeData.js"), "utf8");
 for (const marker of ["sections", "saint", "reading", "fasting", "quote", "quickActions"]) {
   if (!homeData.includes(marker)) {
@@ -94,7 +100,7 @@ for (const section of ["sections", "account", "futureLanguages", "aboutPages", "
 }
 
 const settingsView = await readFile(join(root, "src/features/settings/presentation/settingsView.js"), "utf8");
-for (const marker of ["data-settings-section", "data-settings-back", "settings-section-card", "settings-subpage"]) {
+for (const marker of ["data-settings-section", "data-settings-back", "settings-section-card", "settings-subpage", "google-sign-in", "sign-out"]) {
   if (!settingsView.includes(marker)) {
     throw new Error(`Missing settings subpage marker ${marker}`);
   }
@@ -278,8 +284,15 @@ for (const marker of ["createClient", "persistSession", "detectSessionInUrl", "f
   }
 }
 
+const supabaseConfig = await readFile(join(root, "src/shared/supabaseConfig.js"), "utf8");
+for (const marker of ["txspopmkxaklvoufxmiz.supabase.co", "ORTHODOXIA_SUPABASE_PUBLISHABLE_KEY", "orthodoxia-supabase-publishable-key", "publishableKey"]) {
+  if (!supabaseConfig.includes(marker)) {
+    throw new Error(`Missing Supabase config marker ${marker}`);
+  }
+}
+
 const authRepository = await readFile(join(root, "src/features/auth/data/AuthRepository.js"), "utf8");
-for (const marker of ["signInWithOtp", "verifyOtp", "signInAnonymously", "signInWithPassword", "signOut"]) {
+for (const marker of ["signInWithOtp", "verifyOtp", "signInAnonymously", "signInWithPassword", "signInWithOAuth", "signInWithGoogle", "signOut"]) {
   if (!authRepository.includes(marker)) {
     throw new Error(`Missing auth repository marker ${marker}`);
   }

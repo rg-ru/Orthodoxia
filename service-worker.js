@@ -1,4 +1,4 @@
-const CACHE_NAME = "orthodoxia-v15";
+const CACHE_NAME = "orthodoxia-v16";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -17,24 +17,31 @@ const APP_SHELL = [
   "./src/main.js?v=12",
   "./src/main.js?v=13",
   "./src/main.js?v=15",
+  "./src/main.js?v=16",
   "./src/shared/i18n.js",
   "./src/shared/i18n.js?v=9",
   "./src/shared/i18n.js?v=10",
   "./src/shared/i18n.js?v=11",
   "./src/shared/i18n.js?v=12",
   "./src/shared/i18n.js?v=13",
+  "./src/shared/i18n.js?v=16",
   "./src/shared/supabaseConfig.js",
   "./src/shared/supabaseConfig.js?v=14",
+  "./src/shared/supabaseConfig.js?v=16",
   "./src/shared/supabaseClient.js",
   "./src/shared/supabaseClient.js?v=14",
+  "./src/shared/supabaseClient.js?v=16",
   "./src/shared/html.js",
   "./src/shared/ui.js",
   "./src/features/auth/data/AuthRepository.js",
   "./src/features/auth/data/AuthRepository.js?v=14",
+  "./src/features/auth/data/AuthRepository.js?v=16",
   "./src/features/auth/domain/AuthSession.js",
   "./src/features/auth/domain/AuthSession.js?v=14",
+  "./src/features/auth/domain/AuthSession.js?v=16",
   "./src/features/backend/data/OrthodoxiaBackendRepository.js",
   "./src/features/backend/data/OrthodoxiaBackendRepository.js?v=14",
+  "./src/features/backend/data/OrthodoxiaBackendRepository.js?v=16",
   "./src/features/backend/domain/backendSchema.js",
   "./src/features/backend/domain/backendSchema.js?v=14",
   "./src/features/home/data/homeData.js",
@@ -121,8 +128,11 @@ const APP_SHELL = [
   "./src/features/ai/presentation/aiView.js",
   "./src/features/ai/presentation/aiView.js?v=13",
   "./src/features/settings/data/settingsData.js",
+  "./src/features/settings/data/settingsData.js?v=16",
   "./src/features/settings/domain/settingsModel.js",
-  "./src/features/settings/presentation/settingsView.js"
+  "./src/features/settings/domain/settingsModel.js?v=16",
+  "./src/features/settings/presentation/settingsView.js",
+  "./src/features/settings/presentation/settingsView.js?v=16"
 ];
 
 self.addEventListener("install", (event) => {

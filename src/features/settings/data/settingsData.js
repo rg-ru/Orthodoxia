@@ -4,7 +4,7 @@ export const settingsData = {
   account: {
     isLoggedIn: false,
     email: "",
-    futureAuth: ["Google Sign In", "Apple Sign In"]
+    futureAuth: ["Apple Sign In"]
   },
   sections: [
     { id: "account", key: "account", bodyKey: "account.body", iconName: "account_circle" },

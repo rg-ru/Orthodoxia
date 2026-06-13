@@ -1,4 +1,4 @@
-import { getSupabaseClient } from "../../../shared/supabaseClient.js?v=14";
+import { getSupabaseClient } from "../../../shared/supabaseClient.js?v=16";
 import { backendTables, defaultRemoteSettings } from "../domain/backendSchema.js?v=14";
 
 export class OrthodoxiaBackendRepository {

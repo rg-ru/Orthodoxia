@@ -1,5 +1,5 @@
-import { getSupabaseClient } from "../../../shared/supabaseClient.js?v=14";
-import { createAuthSession } from "../domain/AuthSession.js?v=14";
+import { getSupabaseClient } from "../../../shared/supabaseClient.js?v=16";
+import { createAuthSession } from "../domain/AuthSession.js?v=16";
 
 export class AuthRepository {
   constructor({ clientFactory = getSupabaseClient } = {}) {
@@ -71,6 +71,22 @@ export class AuthRepository {
     return createAuthSession(data);
   }
 
+  async signInWithGoogle(options = {}) {
+    return this.signInWithOAuth("google", options);
+  }
+
+  async signInWithOAuth(provider, options = {}) {
+    const client = this.clientFactory();
+    const { data, error } = await client.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: options.redirectTo ?? getDefaultRedirectUrl()
+      }
+    });
+    throwIfError(error);
+    return data;
+  }
+
   async signInAnonymously(metadata = {}) {
     const client = this.clientFactory();
     const { data, error } = await client.auth.signInAnonymously({
@@ -93,6 +109,10 @@ export class AuthRepository {
 }
 
 function getDefaultRedirectUrl() {
+  if (globalThis.location?.protocol === "file:") {
+    return "https://rg-ru.github.io/Orthodoxia/";
+  }
+
   return globalThis.location?.origin
     ? `${globalThis.location.origin}${globalThis.location.pathname}`
     : undefined;

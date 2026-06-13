@@ -7,11 +7,13 @@ import { renderAi } from "./features/ai/presentation/aiView.js?v=13";
 import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=11";
 import { saintRepository } from "./features/saints/data/SaintRepository.js?v=15";
 import { chatService } from "./features/ai/domain/ChatService.js?v=13";
+import { authRepository } from "./features/auth/data/AuthRepository.js?v=16";
+import { isSupabaseConfigured } from "./shared/supabaseClient.js?v=16";
 import { renderSearch } from "./features/search/presentation/searchView.js?v=15";
 import { clearSearchHistory, saveSearchQuery } from "./features/search/data/searchStorage.js?v=12";
-import { renderSettings } from "./features/settings/presentation/settingsView.js";
-import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
-import { t } from "./shared/i18n.js?v=13";
+import { renderSettings } from "./features/settings/presentation/settingsView.js?v=16";
+import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js?v=16";
+import { t } from "./shared/i18n.js?v=16";
 import { icon } from "./shared/ui.js";
 
 const mainRoutes = [
@@ -576,6 +578,16 @@ function focusAiInput() {
 }
 
 async function handleSettingsAction(action) {
+  if (action === "google-sign-in") {
+    await handleGoogleSignIn();
+    return;
+  }
+
+  if (action === "sign-out") {
+    await handleSignOut();
+    return;
+  }
+
   if (action === "continue-offline") {
     state.preferences.accountMode = "offline";
     savePreferences();
@@ -588,6 +600,110 @@ async function handleSettingsAction(action) {
 
   state.settingsMessage = getSettingsMessage(state.preferences.language, action);
   render();
+}
+
+async function handleGoogleSignIn() {
+  if (!isSupabaseConfigured()) {
+    state.settingsMessage = getSettingsMessage(state.preferences.language, "auth-not-configured");
+    render();
+    return;
+  }
+
+  state.settingsMessage = getSettingsMessage(state.preferences.language, "google-sign-in");
+  render();
+
+  try {
+    await authRepository.signInWithGoogle({
+      redirectTo: getAuthRedirectUrl()
+    });
+  } catch {
+    state.settingsMessage = getSettingsMessage(state.preferences.language, "auth-error");
+    render();
+  }
+}
+
+async function handleSignOut() {
+  try {
+    if (isSupabaseConfigured()) {
+      await authRepository.signOut();
+    }
+  } catch {
+    // Local account state still returns to offline mode if the network sign-out fails.
+  }
+
+  clearAuthPreferences();
+  state.settingsMessage = getSettingsMessage(state.preferences.language, "sign-out");
+  savePreferences();
+  render();
+}
+
+async function initializeAuth() {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  try {
+    const session = await authRepository.getSession();
+    if (applyAuthSession(session)) {
+      savePreferences();
+      render();
+    }
+
+    authRepository.onAuthStateChange((event, nextSession) => {
+      if (event === "SIGNED_OUT") {
+        clearAuthPreferences();
+        savePreferences();
+        render();
+        return;
+      }
+
+      if (applyAuthSession(nextSession)) {
+        savePreferences();
+        render();
+      }
+    });
+  } catch {
+    if (state.route === "settings") {
+      state.settingsMessage = getSettingsMessage(state.preferences.language, "auth-error");
+      render();
+    }
+  }
+}
+
+function applyAuthSession(authSession) {
+  if (!authSession?.userId) {
+    return false;
+  }
+
+  const metadata = authSession.user?.user_metadata ?? {};
+  const displayName = metadata.display_name || metadata.full_name || metadata.name || "";
+  const profilePicture = metadata.avatar_url || metadata.picture || "";
+
+  state.preferences.accountMode = authSession.isAnonymous ? "guest" : "online";
+  state.preferences.email = authSession.email || state.preferences.email;
+
+  if (displayName) {
+    state.preferences.displayName = displayName;
+  }
+
+  if (profilePicture) {
+    state.preferences.profilePicture = profilePicture;
+  }
+
+  return true;
+}
+
+function clearAuthPreferences() {
+  state.preferences.accountMode = "offline";
+  state.preferences.email = "";
+}
+
+function getAuthRedirectUrl() {
+  if (window.location.protocol === "file:") {
+    return "https://rg-ru.github.io/Orthodoxia/";
+  }
+
+  return `${window.location.origin}${window.location.pathname}`;
 }
 
 function updateProfilePicture(file) {
@@ -605,6 +721,7 @@ function updateProfilePicture(file) {
 }
 
 render();
+initializeAuth();
 
 bibleRepository.loadLocalJson().then(() => {
   if (state.route === "bible" || state.route === "search") {
