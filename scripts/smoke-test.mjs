@@ -221,9 +221,42 @@ for (const marker of ["data-search-input", "data-search-result", "data-search-hi
 }
 
 const aiView = await readFile(join(root, "src/features/ai/presentation/aiView.js"), "utf8");
-for (const marker of ["data-ai-input", "data-ai-send", "data-ai-prompt", "ai-message-bubble", "ai-welcome"]) {
+for (const marker of ["data-ai-input", "data-ai-send", "data-ai-stop", "data-ai-clear", "data-ai-prompt", "ai-message-bubble", "ai-welcome", "ai-service-note"]) {
   if (!aiView.includes(marker)) {
     throw new Error(`Missing AI assistant marker ${marker}`);
+  }
+}
+
+const aiRepository = await readFile(join(root, "src/features/ai/data/AiRepository.js"), "utf8");
+for (const marker of ["class AiRepository", "streamChat", "parseStreamEvent", "/api/ai/chat", "text/event-stream"]) {
+  if (!aiRepository.includes(marker)) {
+    throw new Error(`Missing AI repository marker ${marker}`);
+  }
+}
+
+const conversationStorage = await readFile(join(root, "src/features/ai/data/ConversationStorage.js"), "utf8");
+for (const marker of ["class ConversationStorage", "localStorage", "sync", "saveConversation", "clearConversation"]) {
+  if (!conversationStorage.includes(marker)) {
+    throw new Error(`Missing conversation storage marker ${marker}`);
+  }
+}
+
+const messageModel = await readFile(join(root, "src/features/ai/domain/MessageModel.js"), "utf8");
+if (!messageModel.includes("class MessageModel")) {
+  throw new Error("Missing MessageModel class");
+}
+
+const chatService = await readFile(join(root, "src/features/ai/domain/ChatService.js"), "utf8");
+for (const marker of ["class ChatService", "sendMessage", "streaming", "conversationStorage"]) {
+  if (!chatService.includes(marker)) {
+    throw new Error(`Missing chat service marker ${marker}`);
+  }
+}
+
+const aiFiles = [main, aiView, aiRepository, conversationStorage, messageModel, chatService, await readFile(join(root, "src/features/ai/domain/aiModel.js"), "utf8")];
+for (const rejected of ["getMockAiResponse", "ai.mock", "responseTopics", "ai-mock-note"]) {
+  if (aiFiles.some((file) => file.includes(rejected))) {
+    throw new Error(`Rejected AI mock marker ${rejected}`);
   }
 }
 

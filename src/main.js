@@ -3,14 +3,14 @@ import { renderCalendar } from "./features/calendar/presentation/calendarView.js
 import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookView.js";
 import { renderBible } from "./features/bible/presentation/bibleView.js?v=11";
 import { renderSaints } from "./features/saints/presentation/saintsView.js";
-import { renderAi } from "./features/ai/presentation/aiView.js";
+import { renderAi } from "./features/ai/presentation/aiView.js?v=13";
 import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=11";
-import { getMockAiResponse } from "./features/ai/domain/aiModel.js";
+import { chatService } from "./features/ai/domain/ChatService.js?v=13";
 import { renderSearch } from "./features/search/presentation/searchView.js?v=12";
 import { clearSearchHistory, saveSearchQuery } from "./features/search/data/searchStorage.js?v=12";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
-import { t } from "./shared/i18n.js?v=12";
+import { t } from "./shared/i18n.js?v=13";
 import { icon } from "./shared/ui.js";
 
 const mainRoutes = [
@@ -29,6 +29,7 @@ const subRoutes = [
 
 const routes = [...mainRoutes, ...subRoutes];
 const app = document.querySelector("#app");
+const initialAiMessages = chatService.getInitialMessages();
 const state = {
   route: getInitialRoute(),
   bibleBookId: "",
@@ -43,13 +44,16 @@ const state = {
   saintsQuery: "",
   saintId: "",
   aiDraft: "",
-  aiMessages: [],
+  aiMessages: initialAiMessages,
+  aiStatus: getInitialAiStatus(initialAiMessages),
   settingsMessage: "",
   settingsSection: "",
   preferences: readPreferences()
 };
 let bibleSearchTimer = 0;
 let globalSearchTimer = 0;
+let aiAbortController = null;
+let aiRequestId = 0;
 
 applyPreferences(state.preferences);
 
@@ -60,6 +64,10 @@ function getInitialRoute() {
 
 function getCurrentRoute() {
   return routes.find((route) => route.id === state.route) ?? routes[0];
+}
+
+function getInitialAiStatus(messages) {
+  return messages.some((message) => message.status === "error") ? "error" : "ready";
 }
 
 function render() {
@@ -280,6 +288,18 @@ app.addEventListener("click", (event) => {
     return;
   }
 
+  const aiClearTarget = event.target.closest("[data-ai-clear]");
+  if (aiClearTarget) {
+    clearAiConversation();
+    return;
+  }
+
+  const aiStopTarget = event.target.closest("[data-ai-stop]");
+  if (aiStopTarget) {
+    stopAiResponse();
+    return;
+  }
+
   const aiSendTarget = event.target.closest("[data-ai-send]");
   if (aiSendTarget) {
     sendAiMessage();
@@ -485,20 +505,63 @@ function openSearchResult(target) {
   document.querySelector("#main")?.focus({ preventScroll: true });
 }
 
-function sendAiMessage(message = state.aiDraft) {
+async function sendAiMessage(message = state.aiDraft) {
   const cleanMessage = message.trim();
-  if (!cleanMessage) {
+  if (!cleanMessage || state.aiStatus === "streaming") {
     return;
   }
 
-  state.aiMessages = [
-    ...state.aiMessages,
-    { role: "user", text: cleanMessage },
-    { role: "assistant", text: getMockAiResponse(cleanMessage, state.preferences.language) }
-  ];
+  const requestId = ++aiRequestId;
+  aiAbortController = new AbortController();
   state.aiDraft = "";
+  state.aiStatus = "streaming";
   render();
   focusAiInput();
+
+  await chatService.sendMessage({
+    text: cleanMessage,
+    messages: state.aiMessages,
+    language: state.preferences.language,
+    signal: aiAbortController.signal,
+    onUpdate: (messages, details = {}) => {
+      if (requestId !== aiRequestId) {
+        return;
+      }
+
+      state.aiMessages = messages;
+      state.aiStatus = details.status ?? state.aiStatus;
+      render();
+      focusAiInput();
+    }
+  });
+
+  if (requestId !== aiRequestId) {
+    return;
+  }
+
+  aiAbortController = null;
+  if (state.aiStatus === "streaming") {
+    state.aiStatus = "ready";
+    render();
+    focusAiInput();
+  }
+}
+
+function clearAiConversation() {
+  aiRequestId += 1;
+  stopAiResponse();
+  state.aiMessages = chatService.clearConversation();
+  state.aiDraft = "";
+  state.aiStatus = "ready";
+  render();
+  focusAiInput();
+}
+
+function stopAiResponse() {
+  if (aiAbortController) {
+    aiAbortController.abort();
+    aiAbortController = null;
+  }
 }
 
 function focusAiInput() {

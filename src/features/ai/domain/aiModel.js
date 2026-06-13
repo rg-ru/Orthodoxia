@@ -1,5 +1,5 @@
-import { aiData } from "../data/aiData.js";
-import { t } from "../../../shared/i18n.js";
+import { aiData } from "../data/aiData.js?v=13";
+import { t } from "../../../shared/i18n.js?v=13";
 
 export function getAiModel(language = "en") {
   return {
@@ -17,9 +17,14 @@ export function getAiModel(language = "en") {
       chatLabel: t(language, "ai.chat.label"),
       inputLabel: t(language, "ai.input.label"),
       send: t(language, "ai.send"),
+      stop: t(language, "ai.stop"),
+      clear: t(language, "ai.clear"),
       assistant: t(language, "ai.assistant"),
       user: t(language, "ai.user"),
-      mockNotice: t(language, "ai.mock.notice"),
+      serviceNotice: t(language, "ai.service.notice"),
+      statusReady: t(language, "ai.status.ready"),
+      statusStreaming: t(language, "ai.status.streaming"),
+      statusError: t(language, "ai.status.error"),
       guardrails: t(language, "ai.guardrails"),
       use: t(language, "ai.use"),
       prompts: t(language, "ai.prompts"),
@@ -32,18 +37,4 @@ export function getAiModel(language = "en") {
     ],
     prompts: aiData.welcomePrompts.map((prompt) => t(language, prompt.key))
   };
-}
-
-export function getMockAiResponse(message, language = "en") {
-  const cleanMessage = message.trim();
-  if (!cleanMessage) {
-    return t(language, "ai.empty");
-  }
-
-  const normalizedMessage = cleanMessage.toLowerCase();
-  const topic = aiData.responseTopics.find((item) =>
-    item.keywords.some((keyword) => normalizedMessage.includes(keyword))
-  );
-
-  return t(language, topic?.responseKey ?? "ai.mock.default");
 }

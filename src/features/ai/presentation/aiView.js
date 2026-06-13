@@ -1,17 +1,19 @@
-import { getAiModel } from "../domain/aiModel.js";
+import { getAiModel } from "../domain/aiModel.js?v=13";
 import { card, icon, pageHeading, quietList } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 
 export function renderAi(state) {
   const model = getAiModel(state.preferences.language);
   const hasMessages = state.aiMessages.length > 0;
+  const isStreaming = state.aiStatus === "streaming";
 
   return `
     <section class="page ai-page">
       ${pageHeading(model.overview.title, model.overview.body)}
       <article class="card ai-chat-card" aria-label="${escapeHtml(model.labels.chatLabel)}">
+        ${renderToolbar(hasMessages, state.aiStatus, model)}
         ${hasMessages ? renderMessages(state.aiMessages, model) : renderWelcome(model)}
-        ${renderComposer(state.aiDraft, model)}
+        ${renderComposer(state.aiDraft, model, isStreaming)}
       </article>
       ${card({
         eyebrow: model.labels.guardrails,
@@ -20,6 +22,25 @@ export function renderAi(state) {
         content: quietList(model.guardrails)
       })}
     </section>
+  `;
+}
+
+function renderToolbar(hasMessages, status, model) {
+  const labelByStatus = {
+    ready: model.labels.statusReady,
+    streaming: model.labels.statusStreaming,
+    error: model.labels.statusError
+  };
+
+  return `
+    <div class="ai-toolbar">
+      <p class="ai-status-pill" data-ai-status="${escapeHtml(status)}">${escapeHtml(labelByStatus[status] ?? model.labels.statusReady)}</p>
+      ${hasMessages ? `
+        <button class="text-button ai-clear-button" type="button" data-ai-clear>
+          ${escapeHtml(model.labels.clear)}
+        </button>
+      ` : ""}
+    </div>
   `;
 }
 
@@ -55,18 +76,29 @@ function renderMessages(messages, model) {
 function renderMessage(message, model) {
   const isUser = message.role === "user";
   const sender = isUser ? model.labels.user : model.labels.assistant;
+  const statusClass = message.status === "error"
+    ? " ai-message-error"
+    : message.status === "streaming"
+      ? " ai-message-streaming"
+      : "";
 
   return `
-    <article class="ai-message ${isUser ? "ai-message-user" : "ai-message-assistant"}" aria-label="${escapeHtml(sender)}">
+    <article class="ai-message ${isUser ? "ai-message-user" : "ai-message-assistant"}${statusClass}" aria-label="${escapeHtml(sender)}">
       <p class="ai-message-sender">${escapeHtml(sender)}</p>
       <div class="ai-message-bubble">
-        <p>${escapeHtml(message.text)}</p>
+        ${renderMessageText(message)}
       </div>
     </article>
   `;
 }
 
-function renderComposer(draft, model) {
+function renderMessageText(message) {
+  const text = message.text || (message.status === "streaming" ? " " : "");
+  const lines = escapeHtml(text).split("\n").join("<br>");
+  return `<p>${lines}</p>`;
+}
+
+function renderComposer(draft, model, isStreaming) {
   return `
     <div class="ai-composer">
       <label class="sr-only" for="ai-message">${escapeHtml(model.labels.inputLabel)}</label>
@@ -76,11 +108,12 @@ function renderComposer(draft, model) {
         data-ai-input
         rows="1"
         placeholder="${escapeHtml(model.labels.placeholder)}"
+        ${isStreaming ? "disabled" : ""}
       >${escapeHtml(draft)}</textarea>
-      <button class="icon-button ai-send-button" type="button" data-ai-send aria-label="${escapeHtml(model.labels.send)}" ${draft.trim() ? "" : "disabled"}>
-        ${icon("send")}
+      <button class="icon-button ai-send-button" type="button" ${isStreaming ? "data-ai-stop" : "data-ai-send"} aria-label="${escapeHtml(isStreaming ? model.labels.stop : model.labels.send)}" ${draft.trim() || isStreaming ? "" : "disabled"}>
+        ${icon(isStreaming ? "stop" : "send")}
       </button>
     </div>
-    <p class="ai-mock-note">${escapeHtml(model.labels.mockNotice)}</p>
+    <p class="ai-service-note">${escapeHtml(model.labels.serviceNotice)}</p>
   `;
 }
