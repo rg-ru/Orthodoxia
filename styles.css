@@ -1241,6 +1241,96 @@ button {
   gap: var(--space-8);
 }
 
+.global-search-page {
+  gap: var(--space-16);
+}
+
+.global-search-card,
+.global-search-history-card,
+.global-search-group-card {
+  gap: var(--space-16);
+}
+
+.search-history-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.search-history-chip {
+  border: 0;
+  cursor: pointer;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.search-history-chip:hover {
+  opacity: 0.88;
+}
+
+.search-history-chip:active {
+  transform: scale(0.98);
+}
+
+.search-clear-button {
+  width: fit-content;
+}
+
+.global-search-groups {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.global-search-result-list {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.global-search-result {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-16);
+  min-height: var(--space-64);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--background);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.global-search-result:hover {
+  opacity: 0.88;
+}
+
+.global-search-result:active {
+  transform: scale(0.98);
+}
+
+.global-search-result-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-48);
+  height: var(--space-48);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.global-search-result-body {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.global-search-excerpt {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .saints-page,
 .saint-detail-page {
   gap: var(--space-16);
@@ -1535,6 +1625,15 @@ select:focus-visible {
     padding: var(--space-24);
   }
 
+  .global-search-result {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .global-search-result .bible-row-action {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
   .saint-card-action {
     align-self: stretch;
   }
@@ -1566,7 +1665,8 @@ select:focus-visible {
   .reflection-field,
   .ai-input,
   .ai-message-bubble,
-  .ai-prompt-chip {
+  .ai-prompt-chip,
+  .search-history-chip {
     border: 1px solid var(--text-primary);
   }
 
@@ -1580,7 +1680,8 @@ select:focus-visible {
   .calendar-day,
   .prayer-list-item,
   .bible-search-result,
-  .bible-chapter-item {
+  .bible-chapter-item,
+  .global-search-result {
     border: 1px solid var(--text-primary);
   }
 }

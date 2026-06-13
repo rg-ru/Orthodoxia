@@ -6,9 +6,11 @@ import { renderSaints } from "./features/saints/presentation/saintsView.js";
 import { renderAi } from "./features/ai/presentation/aiView.js";
 import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=11";
 import { getMockAiResponse } from "./features/ai/domain/aiModel.js";
+import { renderSearch } from "./features/search/presentation/searchView.js?v=12";
+import { clearSearchHistory, saveSearchQuery } from "./features/search/data/searchStorage.js?v=12";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
-import { t } from "./shared/i18n.js?v=11";
+import { t } from "./shared/i18n.js?v=12";
 import { icon } from "./shared/ui.js";
 
 const mainRoutes = [
@@ -21,6 +23,7 @@ const mainRoutes = [
 ];
 
 const subRoutes = [
+  { id: "search", render: renderSearch },
   { id: "settings", render: renderSettings }
 ];
 
@@ -32,6 +35,8 @@ const state = {
   bibleChapterNumber: "",
   bibleSearchDraft: "",
   bibleSearchQuery: "",
+  globalSearchDraft: "",
+  globalSearchQuery: "",
   calendarSelectedDate: "",
   prayerCategoryId: "",
   prayerId: "",
@@ -44,6 +49,7 @@ const state = {
   preferences: readPreferences()
 };
 let bibleSearchTimer = 0;
+let globalSearchTimer = 0;
 
 applyPreferences(state.preferences);
 
@@ -67,6 +73,9 @@ function render() {
           <h1 class="app-title">Orthodoxia</h1>
         </div>
         <div class="header-actions">
+          <button class="icon-button" type="button" data-route="search" aria-label="${t(language, "app.search")}">
+            ${icon("search")}
+          </button>
           <button class="icon-button" type="button" data-route="settings" aria-label="${t(language, "app.settings")}">
             ${icon("settings")}
           </button>
@@ -149,6 +158,30 @@ app.addEventListener("click", (event) => {
   const calendarBackTarget = event.target.closest("[data-calendar-back]");
   if (calendarBackTarget) {
     state.calendarSelectedDate = "";
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
+  const searchResultTarget = event.target.closest("[data-search-result]");
+  if (searchResultTarget) {
+    openSearchResult(searchResultTarget);
+    return;
+  }
+
+  const searchHistoryTarget = event.target.closest("[data-search-history]");
+  if (searchHistoryTarget) {
+    state.globalSearchDraft = searchHistoryTarget.dataset.searchHistory;
+    state.globalSearchQuery = state.globalSearchDraft;
+    saveSearchQuery(state.globalSearchQuery);
+    render();
+    focusGlobalSearch(state.globalSearchDraft.length);
+    return;
+  }
+
+  const clearSearchHistoryTarget = event.target.closest("[data-search-clear-history]");
+  if (clearSearchHistoryTarget) {
+    clearSearchHistory();
     render();
     document.querySelector("#main")?.focus({ preventScroll: true });
     return;
@@ -254,6 +287,11 @@ app.addEventListener("click", (event) => {
 });
 
 app.addEventListener("keydown", (event) => {
+  if (event.target.matches("[data-search-input]") && event.key === "Enter") {
+    event.preventDefault();
+    commitGlobalSearch();
+  }
+
   if (event.target.matches("[data-ai-input]") && event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();
     sendAiMessage(event.target.value);
@@ -261,6 +299,12 @@ app.addEventListener("keydown", (event) => {
 });
 
 app.addEventListener("input", (event) => {
+  if (event.target.matches("[data-search-input]")) {
+    const cursor = event.target.selectionStart ?? event.target.value.length;
+    state.globalSearchDraft = event.target.value;
+    scheduleGlobalSearch(cursor);
+  }
+
   if (event.target.matches("[data-bible-search]")) {
     const cursor = event.target.selectionStart ?? event.target.value.length;
     state.bibleSearchDraft = event.target.value;
@@ -392,6 +436,55 @@ function focusBibleSearch(cursor) {
   searchField.setSelectionRange(safeCursor, safeCursor);
 }
 
+function scheduleGlobalSearch(cursor) {
+  window.clearTimeout(globalSearchTimer);
+  globalSearchTimer = window.setTimeout(() => {
+    state.globalSearchQuery = state.globalSearchDraft.trim();
+
+    if (state.route !== "search") {
+      return;
+    }
+
+    render();
+    focusGlobalSearch(cursor);
+  }, 200);
+}
+
+function commitGlobalSearch() {
+  state.globalSearchQuery = state.globalSearchDraft.trim();
+  saveSearchQuery(state.globalSearchQuery);
+  render();
+  focusGlobalSearch(state.globalSearchDraft.length);
+}
+
+function focusGlobalSearch(cursor) {
+  const searchField = document.querySelector("[data-search-input]");
+  if (!searchField) {
+    return;
+  }
+
+  const safeCursor = Math.min(cursor, searchField.value.length);
+  searchField.focus({ preventScroll: true });
+  searchField.setSelectionRange(safeCursor, safeCursor);
+}
+
+function openSearchResult(target) {
+  saveSearchQuery(state.globalSearchQuery || state.globalSearchDraft);
+
+  state.route = target.dataset.searchRoute;
+  state.bibleBookId = target.dataset.searchBibleBook ?? "";
+  state.bibleChapterNumber = target.dataset.searchBibleChapter ?? "";
+  state.calendarSelectedDate = target.dataset.searchCalendarDay ?? "";
+  state.prayerCategoryId = target.dataset.searchPrayerCategory ?? "";
+  state.prayerId = target.dataset.searchPrayer ?? "";
+  state.saintId = target.dataset.searchSaint ?? "";
+  state.saintsQuery = "";
+
+  window.location.hash = state.route;
+  render();
+  document.querySelector("#main")?.focus({ preventScroll: true });
+}
+
 function sendAiMessage(message = state.aiDraft) {
   const cleanMessage = message.trim();
   if (!cleanMessage) {
@@ -450,7 +543,7 @@ function updateProfilePicture(file) {
 render();
 
 bibleRepository.loadLocalJson().then(() => {
-  if (state.route === "bible") {
+  if (state.route === "bible" || state.route === "search") {
     render();
   }
 });

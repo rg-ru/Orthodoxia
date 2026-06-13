@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url).pathname;
-const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai", "settings"];
+const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai", "settings", "search"];
 const requiredLayers = ["presentation", "domain", "data"];
 const requiredFiles = [
   "index.html",
@@ -61,6 +61,12 @@ const main = await readFile(join(root, "src/main.js"), "utf8");
 const routeCount = (main.match(/labelKey:/g) || []).length;
 if (routeCount !== 6) {
   throw new Error(`Expected 6 main tabs, found ${routeCount}`);
+}
+
+for (const marker of ["renderSearch", "data-route=\"search\"", "data-search-result", "scheduleGlobalSearch", "saveSearchQuery"]) {
+  if (!main.includes(marker)) {
+    throw new Error(`Missing global search app marker ${marker}`);
+  }
 }
 
 const homeData = await readFile(join(root, "src/features/home/data/homeData.js"), "utf8");
@@ -185,6 +191,32 @@ const saintsView = await readFile(join(root, "src/features/saints/presentation/s
 for (const marker of ["data-saints-search", "data-saint-open", "data-saints-back", "saint-detail-card"]) {
   if (!saintsView.includes(marker)) {
     throw new Error(`Missing saints view marker ${marker}`);
+  }
+}
+
+const searchStorage = await readFile(join(root, "src/features/search/data/searchStorage.js"), "utf8");
+for (const marker of ["SEARCH_HISTORY_KEY", "readSearchHistory", "saveSearchQuery", "clearSearchHistory"]) {
+  if (!searchStorage.includes(marker)) {
+    throw new Error(`Missing global search storage marker ${marker}`);
+  }
+}
+
+const globalSearchResult = await readFile(join(root, "src/features/search/domain/GlobalSearchResult.js"), "utf8");
+if (!globalSearchResult.includes("class GlobalSearchResult")) {
+  throw new Error("Missing GlobalSearchResult model class");
+}
+
+const globalSearchService = await readFile(join(root, "src/features/search/domain/GlobalSearchService.js"), "utf8");
+for (const marker of ["class GlobalSearchService", "searchBible", "buildSaintEntries", "buildPrayerEntries", "buildCalendarEntries"]) {
+  if (!globalSearchService.includes(marker)) {
+    throw new Error(`Missing global search service marker ${marker}`);
+  }
+}
+
+const searchView = await readFile(join(root, "src/features/search/presentation/searchView.js"), "utf8");
+for (const marker of ["data-search-input", "data-search-result", "data-search-history", "global-search-groups"]) {
+  if (!searchView.includes(marker)) {
+    throw new Error(`Missing global search view marker ${marker}`);
   }
 }
 
