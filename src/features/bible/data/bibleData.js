@@ -1,4 +1,10 @@
 export const bibleData = {
+  version: "mock-bible-reader-v1",
+  translation: {
+    id: "mock-kjv-excerpts",
+    label: "Mock KJV excerpts",
+    language: "en"
+  },
   books: [
     {
       id: "genesis",
@@ -157,35 +163,6 @@ export const bibleData = {
           ]
         }
       ]
-    }
-  ],
-  readingPlan: [
-    {
-      id: "plan-john-1",
-      label: "Today",
-      title: "John 1",
-      body: "Read slowly on the light of Christ and the Word made flesh.",
-      bookId: "john",
-      chapterNumber: 1,
-      progress: 33
-    },
-    {
-      id: "plan-psalm-50",
-      label: "Tomorrow",
-      title: "Psalm 50",
-      body: "Pray the psalm as repentance, not as information.",
-      bookId: "psalms",
-      chapterNumber: 50,
-      progress: 0
-    },
-    {
-      id: "plan-matthew-6",
-      label: "This Week",
-      title: "Matthew 6",
-      body: "Return to prayer, fasting, almsgiving, and trust in the Father.",
-      bookId: "matthew",
-      chapterNumber: 6,
-      progress: 0
     }
   ]
 };

@@ -1,9 +1,10 @@
 import { renderHome } from "./features/home/presentation/homeView.js?v=9";
 import { renderCalendar } from "./features/calendar/presentation/calendarView.js";
 import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookView.js";
-import { renderBible } from "./features/bible/presentation/bibleView.js";
+import { renderBible } from "./features/bible/presentation/bibleView.js?v=10";
 import { renderSaints } from "./features/saints/presentation/saintsView.js";
 import { renderAi } from "./features/ai/presentation/aiView.js";
+import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=10";
 import { getMockAiResponse } from "./features/ai/domain/aiModel.js";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
@@ -27,7 +28,6 @@ const routes = [...mainRoutes, ...subRoutes];
 const app = document.querySelector("#app");
 const state = {
   route: getInitialRoute(),
-  bibleQuery: "",
   bibleBookId: "",
   bibleChapterNumber: "",
   calendarSelectedDate: "",
@@ -168,16 +168,6 @@ app.addEventListener("click", (event) => {
     return;
   }
 
-  const bibleOpenTarget = event.target.closest("[data-bible-open-book][data-bible-open-chapter]");
-  if (bibleOpenTarget) {
-    state.bibleBookId = bibleOpenTarget.dataset.bibleOpenBook;
-    state.bibleChapterNumber = bibleOpenTarget.dataset.bibleOpenChapter;
-    state.bibleQuery = "";
-    render();
-    document.querySelector("#main")?.focus({ preventScroll: true });
-    return;
-  }
-
   const bibleBackTarget = event.target.closest("[data-bible-back]");
   if (bibleBackTarget) {
     if (bibleBackTarget.dataset.bibleBack === "books") {
@@ -259,15 +249,6 @@ app.addEventListener("keydown", (event) => {
 });
 
 app.addEventListener("input", (event) => {
-  if (event.target.matches("[data-bible-search]")) {
-    const cursor = event.target.selectionStart ?? event.target.value.length;
-    state.bibleQuery = event.target.value;
-    render();
-    const searchField = document.querySelector("[data-bible-search]");
-    searchField?.focus({ preventScroll: true });
-    searchField?.setSelectionRange(cursor, cursor);
-  }
-
   if (event.target.matches("[data-saints-search]")) {
     const cursor = event.target.selectionStart ?? event.target.value.length;
     state.saintsQuery = event.target.value;
@@ -424,3 +405,9 @@ function updateProfilePicture(file) {
 }
 
 render();
+
+bibleRepository.loadLocalJson().then(() => {
+  if (state.route === "bible") {
+    render();
+  }
+});

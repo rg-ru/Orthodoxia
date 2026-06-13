@@ -1,17 +1,14 @@
-import { t } from "../../../shared/i18n.js";
-import { bibleData } from "../data/bibleData.js";
+import { bibleRepository } from "../data/BibleRepository.js?v=10";
+import { t } from "../../../shared/i18n.js?v=10";
 
 export function getBibleModel({
-  query = "",
   language = "en",
   bookId = "",
   chapterNumber = ""
 } = {}) {
-  const book = bibleData.books.find((item) => item.id === bookId) ?? null;
-  const normalizedChapterNumber = Number(chapterNumber);
-  const chapter = book?.chapters.find((item) => item.number === normalizedChapterNumber) ?? null;
-  const searchQuery = query.trim().toLowerCase();
-  const searchResults = searchQuery ? getSearchResults(searchQuery) : [];
+  const book = bibleRepository.getBook(bookId);
+  const chapter = book ? bibleRepository.getChapter(book.id, chapterNumber) : null;
+  const status = bibleRepository.getStatus();
 
   return {
     screen: getScreen(book, chapter),
@@ -23,38 +20,23 @@ export function getBibleModel({
       books: t(language, "bible.books"),
       chapters: t(language, "bible.chapters"),
       reader: t(language, "bible.reader"),
-      searchEyebrow: t(language, "bible.search.eyebrow"),
-      searchTitle: t(language, "bible.search.title"),
-      searchPlaceholder: t(language, "bible.search.placeholder"),
-      searchResults: t(language, "bible.searchResults"),
-      noSearchResults: t(language, "bible.noSearchResults"),
-      readingPlan: t(language, "bible.readingPlan"),
-      readingPlanBody: t(language, "bible.readingPlan.body"),
-      continueReading: t(language, "bible.continueReading"),
       openBook: t(language, "bible.openBook"),
       openChapter: t(language, "bible.openChapter"),
       backToBooks: t(language, "bible.backToBooks"),
       backToChapters: t(language, "bible.backToChapters"),
       chapterCount: t(language, "bible.chapterCount"),
-      verses: t(language, "bible.verses"),
-      readingProgress: t(language, "bible.readingProgress")
+      verseCount: t(language, "bible.verses"),
+      readingProgress: t(language, "bible.readingProgress"),
+      offlineTitle: t(language, "bible.offline.title"),
+      offlineBody: t(language, "bible.offline.body"),
+      translation: t(language, "bible.translation"),
+      loadError: t(language, "bible.loadError")
     },
-    query,
-    books: bibleData.books.map((item) => ({
-      id: item.id,
-      title: item.title,
-      testament: item.testament,
-      summary: item.summary,
-      iconName: item.iconName,
-      chapterCount: item.chapters.length
-    })),
-    readingPlan: bibleData.readingPlan.map((item) => ({
-      ...item,
-      reference: getReference(item.bookId, item.chapterNumber)
-    })),
-    book,
-    chapter: chapter ? withChapterDetails(book, chapter) : null,
-    searchResults
+    status,
+    books: bibleRepository.getBooks().map(toBookSummary),
+    book: book ? toBookDetail(book) : null,
+    chapters: book ? book.chapters.map((item) => toChapterSummary(book, item)) : [],
+    chapter: chapter ? toChapterDetail(book, chapter) : null
   };
 }
 
@@ -70,42 +52,43 @@ function getScreen(book, chapter) {
   return "books";
 }
 
-function withChapterDetails(book, chapter) {
-  const chapterIndex = book.chapters.findIndex((item) => item.number === chapter.number);
-  const progress = Math.round(((chapterIndex + 1) / book.chapters.length) * 100);
-
+function toBookSummary(book) {
   return {
-    ...chapter,
-    bookId: book.id,
-    bookTitle: book.title,
-    reference: `${book.title} ${chapter.number}`,
-    progress
+    id: book.id,
+    title: book.title,
+    testament: book.testament,
+    summary: book.summary,
+    iconName: book.iconName,
+    chapterCount: book.chapterCount
   };
 }
 
-function getSearchResults(searchQuery) {
-  return bibleData.books.flatMap((book) =>
-    book.chapters.flatMap((chapter) =>
-      chapter.verses.map((verse) => ({
-        id: `${book.id}-${chapter.number}-${verse.number}`,
-        bookId: book.id,
-        chapterNumber: chapter.number,
-        verseNumber: verse.number,
-        reference: `${book.title} ${chapter.number}:${verse.number}`,
-        title: `${book.title} ${chapter.number}`,
-        body: verse.text
-      }))
-    )
-  ).filter((result) =>
-    `${result.reference} ${result.title} ${result.body}`.toLowerCase().includes(searchQuery)
-  ).slice(0, 6);
+function toBookDetail(book) {
+  return {
+    ...toBookSummary(book),
+    chapters: book.chapters
+  };
 }
 
-function getReference(bookId, chapterNumber) {
-  const book = bibleData.books.find((item) => item.id === bookId);
-  if (!book) {
-    return "";
-  }
+function toChapterSummary(book, chapter) {
+  return {
+    bookId: book.id,
+    bookTitle: book.title,
+    number: chapter.number,
+    title: chapter.title,
+    summary: chapter.summary,
+    reference: chapter.reference,
+    verseCount: chapter.verseCount
+  };
+}
 
-  return `${book.title} ${chapterNumber}`;
+function toChapterDetail(book, chapter) {
+  const chapterIndex = book.chapters.findIndex((item) => item.number === chapter.number);
+  const progress = Math.round(((chapterIndex + 1) / Math.max(book.chapterCount, 1)) * 100);
+
+  return {
+    ...toChapterSummary(book, chapter),
+    verses: chapter.verses,
+    progress
+  };
 }

@@ -1,10 +1,9 @@
-import { getBibleModel } from "../domain/bibleModel.js";
+import { getBibleModel } from "../domain/bibleModel.js?v=10";
 import { card, icon, pageHeading, readingProgress } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 
 export function renderBible(state) {
   const model = getBibleModel({
-    query: state.bibleQuery,
     language: state.preferences.language,
     bookId: state.bibleBookId,
     chapterNumber: state.bibleChapterNumber
@@ -23,10 +22,9 @@ export function renderBible(state) {
 
 function renderBooks(model) {
   return `
-    <section class="page bible-page">
+    <section class="page bible-page" data-bible-screen="books">
       ${pageHeading(model.overview.title, model.overview.body)}
-      ${renderSearchCard(model)}
-      ${renderReadingPlan(model)}
+      ${renderOfflineCard(model)}
       <div class="bible-book-grid">
         ${model.books.map((book) => `
           <button class="card bible-book-card" type="button" data-bible-book="${escapeHtml(book.id)}">
@@ -48,7 +46,7 @@ function renderBooks(model) {
 
 function renderChapters(model) {
   return `
-    <section class="page bible-page">
+    <section class="page bible-page" data-bible-screen="chapters">
       <div class="page-heading">
         <button class="text-button back-button" type="button" data-bible-back="books">
           ${icon("arrow_back")}
@@ -57,7 +55,6 @@ function renderChapters(model) {
         <h2>${escapeHtml(model.book.title)}</h2>
         <p>${escapeHtml(model.book.summary)}</p>
       </div>
-      ${renderSearchCard(model)}
       ${card({
         eyebrow: model.book.testament,
         title: model.labels.chapters,
@@ -65,10 +62,10 @@ function renderChapters(model) {
         className: "wide-card",
         content: `
           <div class="bible-chapter-list">
-            ${model.book.chapters.map((chapter) => `
+            ${model.chapters.map((chapter) => `
               <button class="bible-chapter-item" type="button" data-bible-chapter="${chapter.number}">
                 <span>
-                  <strong>${escapeHtml(model.book.title)} ${chapter.number}</strong>
+                  <strong>${escapeHtml(chapter.reference)}</strong>
                   <span class="meta-line">${escapeHtml(chapter.title)}</span>
                   <span class="meta-line">${escapeHtml(chapter.summary)}</span>
                 </span>
@@ -87,7 +84,7 @@ function renderChapters(model) {
 
 function renderVerseReader(model) {
   return `
-    <section class="page bible-reader-page">
+    <section class="page bible-reader-page" data-bible-screen="reader">
       <div class="page-heading">
         <button class="text-button back-button" type="button" data-bible-back="chapters">
           ${icon("arrow_back")}
@@ -99,7 +96,7 @@ function renderVerseReader(model) {
       <article class="card bible-reader-card">
         <div class="bible-reader-meta">
           <span class="card-eyebrow">${escapeHtml(model.labels.reader)}</span>
-          <span class="meta-line">${model.chapter.verses.length} ${escapeHtml(model.labels.verses)}</span>
+          <span class="meta-line">${model.chapter.verseCount} ${escapeHtml(model.labels.verseCount)}</span>
         </div>
         <div class="bible-verse-list">
           ${model.chapter.verses.map((verse) => `
@@ -118,69 +115,17 @@ function renderVerseReader(model) {
   `;
 }
 
-function renderSearchCard(model) {
+function renderOfflineCard(model) {
   return card({
-    eyebrow: model.labels.searchEyebrow,
-    title: model.labels.searchTitle,
-    iconName: "search",
-    className: "bible-search-card wide-card",
+    eyebrow: model.labels.translation,
+    title: model.status.translation.label,
+    body: model.status.loadError ? model.labels.loadError : model.labels.offlineBody,
+    iconName: "download_done",
+    className: "bible-offline-card wide-card",
     content: `
-      <label class="sr-only" for="bible-search">${escapeHtml(model.labels.searchTitle)}</label>
-      <input class="search-field" id="bible-search" data-bible-search value="${escapeHtml(model.query)}" placeholder="${escapeHtml(model.labels.searchPlaceholder)}">
-      ${renderSearchResults(model)}
-    `
-  });
-}
-
-function renderSearchResults(model) {
-  if (!model.query.trim()) {
-    return "";
-  }
-
-  if (!model.searchResults.length) {
-    return `<p class="meta-line">${escapeHtml(model.labels.noSearchResults)}</p>`;
-  }
-
-  return `
-    <div class="bible-search-results" aria-label="${escapeHtml(model.labels.searchResults)}">
-      ${model.searchResults.map((result) => `
-        <button class="bible-search-result" type="button" data-bible-open-book="${escapeHtml(result.bookId)}" data-bible-open-chapter="${result.chapterNumber}">
-          <span>
-            <strong>${escapeHtml(result.reference)}</strong>
-            <span class="meta-line">${escapeHtml(result.body)}</span>
-          </span>
-          <span class="bible-row-action">
-            <span>${escapeHtml(model.labels.continueReading)}</span>
-            ${icon("chevron_right")}
-          </span>
-        </button>
-      `).join("")}
-    </div>
-  `;
-}
-
-function renderReadingPlan(model) {
-  return card({
-    eyebrow: model.labels.readingPlan,
-    title: model.labels.continueReading,
-    body: model.labels.readingPlanBody,
-    iconName: "event_note",
-    className: "wide-card",
-    content: `
-      <div class="bible-plan-list">
-        ${model.readingPlan.map((item) => `
-          <button class="bible-plan-item" type="button" data-bible-open-book="${escapeHtml(item.bookId)}" data-bible-open-chapter="${item.chapterNumber}">
-            <span>
-              <span class="card-eyebrow">${escapeHtml(item.label)}</span>
-              <strong>${escapeHtml(item.reference)}</strong>
-              <span class="meta-line">${escapeHtml(item.body)}</span>
-            </span>
-            <span class="bible-row-action">
-              <span>${escapeHtml(model.labels.continueReading)}</span>
-              ${icon("chevron_right")}
-            </span>
-          </button>
-        `).join("")}
+      <div class="segmented-row">
+        <span class="small-pill">${escapeHtml(model.labels.offlineTitle)}</span>
+        <span class="small-pill">${escapeHtml(model.status.version)}</span>
       </div>
     `
   });

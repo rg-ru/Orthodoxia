@@ -120,16 +120,43 @@ for (const marker of ["data-prayer-category", "data-prayer-open", "data-prayer-b
 }
 
 const bibleData = await readFile(join(root, "src/features/bible/data/bibleData.js"), "utf8");
-for (const marker of ["Genesis", "Psalms", "Matthew", "John", "Romans", "readingPlan"]) {
+for (const marker of ["mock-bible-reader-v1", "Genesis", "Psalms", "Matthew", "John", "Romans"]) {
   if (!bibleData.includes(marker)) {
     throw new Error(`Missing bible mock data marker ${marker}`);
   }
 }
 
+const bibleJson = await readFile(join(root, "src/features/bible/data/bible-local.json"), "utf8");
+for (const marker of ["mock-bible-reader-v1", "\"books\"", "\"chapters\"", "\"verses\""]) {
+  if (!bibleJson.includes(marker)) {
+    throw new Error(`Missing bible local JSON marker ${marker}`);
+  }
+}
+
+const bibleRepository = await readFile(join(root, "src/features/bible/data/BibleRepository.js"), "utf8");
+for (const marker of ["class BibleRepository", "loadLocalJson", "localStorage", "getChapter", "chapterByReference"]) {
+  if (!bibleRepository.includes(marker)) {
+    throw new Error(`Missing BibleRepository marker ${marker}`);
+  }
+}
+
+for (const modelFile of ["BibleBook.js", "BibleChapter.js", "BibleVerse.js"]) {
+  const model = await readFile(join(root, `src/features/bible/domain/${modelFile}`), "utf8");
+  if (!model.includes(`class ${modelFile.replace(".js", "")}`)) {
+    throw new Error(`Missing ${modelFile} model class`);
+  }
+}
+
 const bibleView = await readFile(join(root, "src/features/bible/presentation/bibleView.js"), "utf8");
-for (const marker of ["data-bible-book", "data-bible-chapter", "data-bible-open-book", "data-bible-back", "bible-reader-card"]) {
+for (const marker of ["data-bible-screen", "data-bible-book", "data-bible-chapter", "data-bible-back", "bible-reader-card"]) {
   if (!bibleView.includes(marker)) {
     throw new Error(`Missing bible view marker ${marker}`);
+  }
+}
+
+for (const rejected of ["data-bible-search", "data-bible-open-book", "bible-plan", "renderSearch", "renderReadingPlan"]) {
+  if (bibleView.includes(rejected)) {
+    throw new Error(`Bible reader should not include ${rejected} yet`);
   }
 }
 
