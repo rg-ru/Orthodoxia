@@ -48,7 +48,7 @@
       <string>Editor</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>com.orthodoxia.app</string>
+        <string>io.supabase.flutter</string>
       </array>
     </dict>
   </array>

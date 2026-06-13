@@ -5,15 +5,16 @@ class AppConfig {
     required this.supabaseUrl,
     required this.supabaseAnonKey,
     required this.authRedirectUrl,
-    required this.googleWebClientId,
-    required this.googleIosClientId,
   });
+
+  static const String authCallbackScheme = 'io.supabase.flutter';
+  static const String authCallbackHost = 'login-callback';
+  static const String defaultAuthRedirectUrl =
+      '$authCallbackScheme://$authCallbackHost';
 
   final String supabaseUrl;
   final String supabaseAnonKey;
   final String authRedirectUrl;
-  final String googleWebClientId;
-  final String googleIosClientId;
 
   static AppConfig fromEnvironment() {
     final supabaseUrl = _read('SUPABASE_URL');
@@ -30,14 +31,12 @@ class AppConfig {
       supabaseAnonKey: supabaseAnonKey,
       authRedirectUrl: _read(
         'AUTH_REDIRECT_URL',
-        fallback: 'com.orthodoxia.app://login-callback/',
+        fallback: defaultAuthRedirectUrl,
       ),
-      googleWebClientId: _read('GOOGLE_WEB_CLIENT_ID'),
-      googleIosClientId: _read('GOOGLE_IOS_CLIENT_ID'),
     );
   }
 
-  bool get hasNativeGoogleConfiguration => googleWebClientId.isNotEmpty;
+  bool get hasExpectedAuthRedirect => authRedirectUrl == defaultAuthRedirectUrl;
 
   static String _read(String key, {String fallback = ''}) {
     final value = _dartDefine(key);
@@ -56,10 +55,6 @@ class AppConfig {
         return const String.fromEnvironment('SUPABASE_ANON_KEY').trim();
       case 'AUTH_REDIRECT_URL':
         return const String.fromEnvironment('AUTH_REDIRECT_URL').trim();
-      case 'GOOGLE_WEB_CLIENT_ID':
-        return const String.fromEnvironment('GOOGLE_WEB_CLIENT_ID').trim();
-      case 'GOOGLE_IOS_CLIENT_ID':
-        return const String.fromEnvironment('GOOGLE_IOS_CLIENT_ID').trim();
       default:
         return '';
     }

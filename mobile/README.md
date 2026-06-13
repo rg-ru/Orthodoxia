@@ -17,7 +17,8 @@ The app reads Supabase configuration from environment values through `flutter_do
 ```bash
 flutter build apk \
   --dart-define=SUPABASE_URL=https://txspopmkxaklvoufxmiz.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=sb_publishable_jIAPtPMw9qM0urofEyYSWg_mJLztHPA
+  --dart-define=SUPABASE_ANON_KEY=sb_publishable_jIAPtPMw9qM0urofEyYSWg_mJLztHPA \
+  --dart-define=AUTH_REDIRECT_URL=io.supabase.flutter://login-callback
 ```
 
 The Supabase anon key is public client configuration. Do not use a `service_role` key in the Flutter app.
@@ -28,13 +29,9 @@ Supabase hosted OAuth works with:
 
 - Android package name: `com.orthodoxia.app`
 - iOS bundle id: `com.orthodoxia.app`
-- Redirect URL: `com.orthodoxia.app://login-callback/`
+- Flutter redirect URL: `io.supabase.flutter://login-callback`
+- Google OAuth callback URL: `https://txspopmkxaklvoufxmiz.supabase.co/auth/v1/callback`
 
-Add the redirect URL to the Supabase Auth redirect allow list.
+Add `io.supabase.flutter://login-callback` to Supabase Dashboard -> Authentication -> URL Configuration -> Redirect URLs. Use this exact value with no trailing slash. The value in `AUTH_REDIRECT_URL`, the Android manifest scheme/host, and the iOS URL scheme must stay identical.
 
-For native Google Sign-In with `google_sign_in`, provide:
-
-- `GOOGLE_WEB_CLIENT_ID`
-- `GOOGLE_IOS_CLIENT_ID` for iOS
-
-When those values are present, the auth repository signs in with a Google ID token through Supabase. Otherwise it uses Supabase OAuth redirect flow.
+The Flutter app uses `supabase.auth.signInWithOAuth(OAuthProvider.google)` and opens Google sign-in in the external browser. Supabase Flutter listens for the deep link, exchanges the PKCE code, restores the session, and emits auth state changes.

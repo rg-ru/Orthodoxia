@@ -67,6 +67,7 @@ for (const file of [
   "mobile/.env.example",
   "mobile/lib/main.dart",
   "mobile/lib/app/app_config.dart",
+  "mobile/lib/features/auth/data/auth_callback_handler.dart",
   "mobile/lib/features/auth/data/auth_repository.dart",
   "mobile/lib/features/auth/domain/auth_failure.dart",
   "mobile/lib/features/auth/domain/auth_status.dart",
@@ -126,30 +127,50 @@ for (const marker of ["data-settings-section", "data-settings-back", "settings-s
 }
 
 const mobilePubspec = await readFile(join(root, "mobile/pubspec.yaml"), "utf8");
-for (const marker of ["supabase_flutter", "flutter_dotenv", "google_sign_in", ".env"]) {
+for (const marker of ["supabase_flutter", "flutter_dotenv", ".env"]) {
   if (!mobilePubspec.includes(marker)) {
     throw new Error(`Missing Flutter pubspec marker ${marker}`);
   }
 }
+if (mobilePubspec.includes("google_sign_in")) {
+  throw new Error("Flutter mobile auth must use Supabase OAuth, not native google_sign_in");
+}
 
 const mobileEnv = await readFile(join(root, "mobile/.env"), "utf8");
-for (const marker of ["SUPABASE_URL", "SUPABASE_ANON_KEY", "txspopmkxaklvoufxmiz.supabase.co", "sb_publishable_jIAPtPMw9qM0urofEyYSWg_mJLztHPA"]) {
+for (const marker of ["SUPABASE_URL", "SUPABASE_ANON_KEY", "txspopmkxaklvoufxmiz.supabase.co", "sb_publishable_jIAPtPMw9qM0urofEyYSWg_mJLztHPA", "io.supabase.flutter://login-callback"]) {
   if (!mobileEnv.includes(marker)) {
     throw new Error(`Missing Flutter env marker ${marker}`);
   }
 }
 
 const mobileMain = await readFile(join(root, "mobile/lib/main.dart"), "utf8");
-for (const marker of ["dotenv.load", "Supabase.initialize", "AppConfig.fromEnvironment", "AuthRepository"]) {
+for (const marker of ["dotenv.load", "Supabase.initialize", "publishableKey", "AuthFlowType.pkce", "AppConfig.fromEnvironment", "AuthRepository"]) {
   if (!mobileMain.includes(marker)) {
     throw new Error(`Missing Flutter main marker ${marker}`);
   }
 }
 
+const mobileAppConfig = await readFile(join(root, "mobile/lib/app/app_config.dart"), "utf8");
+for (const marker of ["authCallbackScheme", "io.supabase.flutter", "authCallbackHost", "login-callback", "defaultAuthRedirectUrl"]) {
+  if (!mobileAppConfig.includes(marker)) {
+    throw new Error(`Missing Flutter app config marker ${marker}`);
+  }
+}
+
 const mobileAuthRepository = await readFile(join(root, "mobile/lib/features/auth/data/auth_repository.dart"), "utf8");
-for (const marker of ["class AuthRepository", "signInWithGoogle", "signInWithOAuth", "signInWithIdToken", "signOut", "authStateChanges", "SocketException", "TimeoutException"]) {
+for (const marker of ["class AuthRepository", "signInWithGoogle", "signInWithOAuth", "OAuthProvider.google", "LaunchMode.externalApplication", "redirect_uri_mismatch", "invalid_credentials", "signOut", "authStateChanges", "SocketException", "TimeoutException"]) {
   if (!mobileAuthRepository.includes(marker)) {
     throw new Error(`Missing Flutter auth repository marker ${marker}`);
+  }
+}
+if (mobileAuthRepository.includes("signInWithIdToken") || mobileAuthRepository.includes("GoogleSignIn")) {
+  throw new Error("Flutter mobile auth repository must not use native Google token sign-in");
+}
+
+const mobileAuthCallbackHandler = await readFile(join(root, "mobile/lib/features/auth/data/auth_callback_handler.dart"), "utf8");
+for (const marker of ["AuthCallbackHandler", "AppConfig.authCallbackScheme", "AppConfig.authCallbackHost", "exchangeCodeForSession", "error_description"]) {
+  if (!mobileAuthCallbackHandler.includes(marker)) {
+    throw new Error(`Missing Flutter auth callback marker ${marker}`);
   }
 }
 
@@ -168,14 +189,14 @@ for (const marker of ["Continue with Google", "Card", "AuthFailure", "Supabase"]
 }
 
 const mobileAndroidManifest = await readFile(join(root, "mobile/android/app/src/main/AndroidManifest.xml"), "utf8");
-for (const marker of ["INTERNET", "singleTask", "com.orthodoxia.app", "login-callback"]) {
+for (const marker of ["INTERNET", "singleTask", "io.supabase.flutter", "login-callback"]) {
   if (!mobileAndroidManifest.includes(marker)) {
     throw new Error(`Missing Flutter Android auth marker ${marker}`);
   }
 }
 
 const mobileIosPlist = await readFile(join(root, "mobile/ios/Runner/Info.plist"), "utf8");
-for (const marker of ["CFBundleURLTypes", "com.orthodoxia.app", "Orthodoxia"]) {
+for (const marker of ["CFBundleURLTypes", "io.supabase.flutter", "Orthodoxia"]) {
   if (!mobileIosPlist.includes(marker)) {
     throw new Error(`Missing Flutter iOS auth marker ${marker}`);
   }
