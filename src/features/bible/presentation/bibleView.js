@@ -1,4 +1,5 @@
-import { getBibleModel } from "../domain/bibleModel.js?v=10";
+import { getBibleModel } from "../domain/bibleModel.js?v=11";
+import { renderSearchScreen } from "./SearchScreen.js?v=11";
 import { card, icon, pageHeading, readingProgress } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 
@@ -6,7 +7,9 @@ export function renderBible(state) {
   const model = getBibleModel({
     language: state.preferences.language,
     bookId: state.bibleBookId,
-    chapterNumber: state.bibleChapterNumber
+    chapterNumber: state.bibleChapterNumber,
+    searchDraft: state.bibleSearchDraft,
+    searchQuery: state.bibleSearchQuery
   });
 
   if (model.screen === "reader") {
@@ -25,6 +28,7 @@ function renderBooks(model) {
     <section class="page bible-page" data-bible-screen="books">
       ${pageHeading(model.overview.title, model.overview.body)}
       ${renderOfflineCard(model)}
+      ${renderSearchScreen(model)}
       <div class="bible-book-grid">
         ${model.books.map((book) => `
           <button class="card bible-book-card" type="button" data-bible-book="${escapeHtml(book.id)}">

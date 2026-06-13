@@ -1,14 +1,20 @@
-import { bibleRepository } from "../data/BibleRepository.js?v=10";
-import { t } from "../../../shared/i18n.js?v=10";
+import { bibleRepository } from "../data/BibleRepository.js?v=11";
+import { BibleSearchService } from "./BibleSearchService.js?v=11";
+import { t } from "../../../shared/i18n.js?v=11";
+
+const bibleSearchService = new BibleSearchService(bibleRepository);
 
 export function getBibleModel({
   language = "en",
   bookId = "",
-  chapterNumber = ""
+  chapterNumber = "",
+  searchDraft = "",
+  searchQuery = ""
 } = {}) {
   const book = bibleRepository.getBook(bookId);
   const chapter = book ? bibleRepository.getChapter(book.id, chapterNumber) : null;
   const status = bibleRepository.getStatus();
+  const search = bibleSearchService.search(searchQuery);
 
   return {
     screen: getScreen(book, chapter),
@@ -30,9 +36,25 @@ export function getBibleModel({
       offlineTitle: t(language, "bible.offline.title"),
       offlineBody: t(language, "bible.offline.body"),
       translation: t(language, "bible.translation"),
-      loadError: t(language, "bible.loadError")
+      loadError: t(language, "bible.loadError"),
+      searchEyebrow: t(language, "bible.search.eyebrow"),
+      searchTitle: t(language, "bible.search.title"),
+      searchPlaceholder: t(language, "bible.search.placeholder"),
+      searchHelp: t(language, "bible.search.help"),
+      searchResults: t(language, "bible.search.results"),
+      noSearchResults: t(language, "bible.search.empty"),
+      searchError: t(language, "bible.search.error"),
+      resultBook: t(language, "bible.result.book"),
+      resultChapter: t(language, "bible.result.chapter"),
+      resultVerse: t(language, "bible.result.verse"),
+      resultKeyword: t(language, "bible.result.keyword"),
+      openResult: t(language, "bible.result.open")
     },
     status,
+    search: {
+      ...search,
+      draft: searchDraft
+    },
     books: bibleRepository.getBooks().map(toBookSummary),
     book: book ? toBookDetail(book) : null,
     chapters: book ? book.chapters.map((item) => toChapterSummary(book, item)) : [],

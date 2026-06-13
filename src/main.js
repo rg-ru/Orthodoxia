@@ -1,14 +1,14 @@
 import { renderHome } from "./features/home/presentation/homeView.js?v=9";
 import { renderCalendar } from "./features/calendar/presentation/calendarView.js";
 import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookView.js";
-import { renderBible } from "./features/bible/presentation/bibleView.js?v=10";
+import { renderBible } from "./features/bible/presentation/bibleView.js?v=11";
 import { renderSaints } from "./features/saints/presentation/saintsView.js";
 import { renderAi } from "./features/ai/presentation/aiView.js";
-import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=10";
+import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=11";
 import { getMockAiResponse } from "./features/ai/domain/aiModel.js";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
-import { t } from "./shared/i18n.js";
+import { t } from "./shared/i18n.js?v=11";
 import { icon } from "./shared/ui.js";
 
 const mainRoutes = [
@@ -30,6 +30,8 @@ const state = {
   route: getInitialRoute(),
   bibleBookId: "",
   bibleChapterNumber: "",
+  bibleSearchDraft: "",
+  bibleSearchQuery: "",
   calendarSelectedDate: "",
   prayerCategoryId: "",
   prayerId: "",
@@ -41,6 +43,7 @@ const state = {
   settingsSection: "",
   preferences: readPreferences()
 };
+let bibleSearchTimer = 0;
 
 applyPreferences(state.preferences);
 
@@ -160,6 +163,15 @@ app.addEventListener("click", (event) => {
     return;
   }
 
+  const bibleSearchResultTarget = event.target.closest("[data-bible-search-result]");
+  if (bibleSearchResultTarget) {
+    state.bibleBookId = bibleSearchResultTarget.dataset.bibleResultBook;
+    state.bibleChapterNumber = bibleSearchResultTarget.dataset.bibleResultChapter;
+    render();
+    document.querySelector("#main")?.focus({ preventScroll: true });
+    return;
+  }
+
   const bibleChapterTarget = event.target.closest("[data-bible-chapter]");
   if (bibleChapterTarget) {
     state.bibleChapterNumber = bibleChapterTarget.dataset.bibleChapter;
@@ -249,6 +261,12 @@ app.addEventListener("keydown", (event) => {
 });
 
 app.addEventListener("input", (event) => {
+  if (event.target.matches("[data-bible-search]")) {
+    const cursor = event.target.selectionStart ?? event.target.value.length;
+    state.bibleSearchDraft = event.target.value;
+    scheduleBibleSearch(cursor);
+  }
+
   if (event.target.matches("[data-saints-search]")) {
     const cursor = event.target.selectionStart ?? event.target.value.length;
     state.saintsQuery = event.target.value;
@@ -347,6 +365,31 @@ function applyPreferences(preferences) {
 
   document.documentElement.dataset.textSize = preferences.textSize;
   document.documentElement.lang = preferences.language;
+}
+
+function scheduleBibleSearch(cursor) {
+  window.clearTimeout(bibleSearchTimer);
+  bibleSearchTimer = window.setTimeout(() => {
+    state.bibleSearchQuery = state.bibleSearchDraft.trim();
+
+    if (state.route !== "bible") {
+      return;
+    }
+
+    render();
+    focusBibleSearch(cursor);
+  }, 200);
+}
+
+function focusBibleSearch(cursor) {
+  const searchField = document.querySelector("[data-bible-search]");
+  if (!searchField) {
+    return;
+  }
+
+  const safeCursor = Math.min(cursor, searchField.value.length);
+  searchField.focus({ preventScroll: true });
+  searchField.setSelectionRange(safeCursor, safeCursor);
 }
 
 function sendAiMessage(message = state.aiDraft) {

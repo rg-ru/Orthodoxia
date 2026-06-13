@@ -1093,6 +1093,67 @@ button {
   gap: var(--space-16);
 }
 
+.bible-search-card {
+  gap: var(--space-16);
+}
+
+.bible-search-status {
+  display: grid;
+  gap: var(--space-8);
+  color: var(--text-secondary);
+}
+
+.bible-search-status p {
+  margin: 0;
+}
+
+.bible-search-results {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.bible-search-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-16);
+  min-height: var(--space-64);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--background);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
+}
+
+.bible-search-result:hover {
+  opacity: 0.88;
+}
+
+.bible-search-result:active {
+  transform: scale(0.98);
+}
+
+.bible-search-result-body {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.bible-search-result-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.bible-search-excerpt {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .bible-chapter-list {
   display: grid;
   gap: var(--space-8);
@@ -1451,6 +1512,15 @@ select:focus-visible {
     padding: var(--space-24);
   }
 
+  .bible-search-result {
+    grid-template-columns: 1fr;
+  }
+
+  .bible-search-result .bible-row-action {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
   .bible-chapter-item {
     align-items: flex-start;
     flex-direction: column;
@@ -1509,6 +1579,7 @@ select:focus-visible {
   .home-action-icon,
   .calendar-day,
   .prayer-list-item,
+  .bible-search-result,
   .bible-chapter-item {
     border: 1px solid var(--text-primary);
   }

@@ -140,23 +140,37 @@ for (const marker of ["class BibleRepository", "loadLocalJson", "localStorage", 
   }
 }
 
-for (const modelFile of ["BibleBook.js", "BibleChapter.js", "BibleVerse.js"]) {
+for (const modelFile of ["BibleBook.js", "BibleChapter.js", "BibleVerse.js", "SearchResult.js"]) {
   const model = await readFile(join(root, `src/features/bible/domain/${modelFile}`), "utf8");
   if (!model.includes(`class ${modelFile.replace(".js", "")}`)) {
     throw new Error(`Missing ${modelFile} model class`);
   }
 }
 
+const bibleSearchService = await readFile(join(root, "src/features/bible/domain/BibleSearchService.js"), "utf8");
+for (const marker of ["class BibleSearchService", "buildIndex", "ensureIndex", "parseReference", "keyword"]) {
+  if (!bibleSearchService.includes(marker)) {
+    throw new Error(`Missing BibleSearchService marker ${marker}`);
+  }
+}
+
 const bibleView = await readFile(join(root, "src/features/bible/presentation/bibleView.js"), "utf8");
-for (const marker of ["data-bible-screen", "data-bible-book", "data-bible-chapter", "data-bible-back", "bible-reader-card"]) {
+for (const marker of ["data-bible-screen", "data-bible-book", "data-bible-chapter", "data-bible-back", "bible-reader-card", "renderSearchScreen"]) {
   if (!bibleView.includes(marker)) {
     throw new Error(`Missing bible view marker ${marker}`);
   }
 }
 
-for (const rejected of ["data-bible-search", "data-bible-open-book", "bible-plan", "renderSearch", "renderReadingPlan"]) {
+const bibleSearchScreen = await readFile(join(root, "src/features/bible/presentation/SearchScreen.js"), "utf8");
+for (const marker of ["data-bible-search", "data-bible-search-result", "bible-search-results", "bible-search-status"]) {
+  if (!bibleSearchScreen.includes(marker)) {
+    throw new Error(`Missing Bible SearchScreen marker ${marker}`);
+  }
+}
+
+for (const rejected of ["data-bible-open-book", "bible-plan", "renderReadingPlan"]) {
   if (bibleView.includes(rejected)) {
-    throw new Error(`Bible reader should not include ${rejected} yet`);
+    throw new Error(`Bible module should not include ${rejected}`);
   }
 }
 

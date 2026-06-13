@@ -1,8 +1,8 @@
-import { BibleBook } from "../domain/BibleBook.js?v=10";
-import { bibleData } from "./bibleData.js?v=10";
+import { BibleBook } from "../domain/BibleBook.js?v=11";
+import { bibleData } from "./bibleData.js?v=11";
 
 const STORAGE_KEY = "orthodoxia:bible:dataset";
-const LOCAL_BIBLE_JSON_URL = new URL("./bible-local.json?v=10", import.meta.url);
+const LOCAL_BIBLE_JSON_URL = new URL("./bible-local.json?v=11", import.meta.url);
 
 export class BibleRepository {
   constructor() {

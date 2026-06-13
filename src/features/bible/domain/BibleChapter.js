@@ -1,4 +1,4 @@
-import { BibleVerse } from "./BibleVerse.js?v=10";
+import { BibleVerse } from "./BibleVerse.js?v=11";
 
 export class BibleChapter {
   constructor({ bookId, bookTitle, number, title, summary, verses = [] }) {

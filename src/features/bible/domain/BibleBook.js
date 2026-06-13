@@ -1,4 +1,4 @@
-import { BibleChapter } from "./BibleChapter.js?v=10";
+import { BibleChapter } from "./BibleChapter.js?v=11";
 
 export class BibleBook {
   constructor({ id, title, testament, summary, iconName, chapters = [] }) {
