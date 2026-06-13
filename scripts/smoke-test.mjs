@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url).pathname;
-const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai", "settings", "search"];
+const requiredFeatures = ["home", "calendar", "prayerBook", "bible", "saints", "ai", "settings", "search", "auth", "backend"];
 const requiredLayers = ["presentation", "domain", "data"];
 const requiredFiles = [
   "index.html",
@@ -56,6 +56,9 @@ for (const feature of requiredFeatures) {
     await assertDirectory(`src/features/${feature}/${layer}`);
   }
 }
+
+await assertFile("supabase/migrations/20260613000000_initial_schema.sql");
+await assertFile("supabase/README.md");
 
 const main = await readFile(join(root, "src/main.js"), "utf8");
 const routeCount = (main.match(/labelKey:/g) || []).length;
@@ -217,6 +220,40 @@ const searchView = await readFile(join(root, "src/features/search/presentation/s
 for (const marker of ["data-search-input", "data-search-result", "data-search-history", "global-search-groups"]) {
   if (!searchView.includes(marker)) {
     throw new Error(`Missing global search view marker ${marker}`);
+  }
+}
+
+const supabaseMigration = await readFile(join(root, "supabase/migrations/20260613000000_initial_schema.sql"), "utf8");
+for (const table of ["users", "saints", "prayers", "bible_books", "bible_chapters", "bible_verses", "favorites", "notes", "prayer_lists", "bible_bookmarks", "settings"]) {
+  if (!supabaseMigration.includes(`public.${table}`)) {
+    throw new Error(`Missing Supabase table ${table}`);
+  }
+}
+
+for (const marker of ["enable row level security", "handle_new_user", "on_auth_user_created", "item_type in ('saint', 'prayer', 'verse')", "auth.uid()"]) {
+  if (!supabaseMigration.includes(marker)) {
+    throw new Error(`Missing Supabase migration marker ${marker}`);
+  }
+}
+
+const supabaseClient = await readFile(join(root, "src/shared/supabaseClient.js"), "utf8");
+for (const marker of ["createClient", "persistSession", "detectSessionInUrl", "flowType", "getSupabaseClient"]) {
+  if (!supabaseClient.includes(marker)) {
+    throw new Error(`Missing Supabase client marker ${marker}`);
+  }
+}
+
+const authRepository = await readFile(join(root, "src/features/auth/data/AuthRepository.js"), "utf8");
+for (const marker of ["signInWithOtp", "verifyOtp", "signInAnonymously", "signInWithPassword", "signOut"]) {
+  if (!authRepository.includes(marker)) {
+    throw new Error(`Missing auth repository marker ${marker}`);
+  }
+}
+
+const backendRepository = await readFile(join(root, "src/features/backend/data/OrthodoxiaBackendRepository.js"), "utf8");
+for (const marker of ["listSaints", "listPrayers", "listBibleBooks", "listFavorites", "listNotes", "listPrayerLists", "listBibleBookmarks", "upsertSettings"]) {
+  if (!backendRepository.includes(marker)) {
+    throw new Error(`Missing backend repository marker ${marker}`);
   }
 }
 

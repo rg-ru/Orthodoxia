@@ -46,6 +46,16 @@ npm test
 npm run build
 ```
 
+## Backend Foundation
+
+Supabase database and connection-layer setup lives in `supabase/` and `src/features/backend/`.
+
+- SQL migration: `supabase/migrations/20260613000000_initial_schema.sql`
+- Auth connection layer: `src/features/auth/data/AuthRepository.js`
+- Supabase client: `src/shared/supabaseClient.js`
+
+Only publishable Supabase browser keys belong in client configuration. Never add a service role key to this repository or the shipped app.
+
 ## Deployment
 
 The app deploys to GitHub Pages through `.github/workflows/pages.yml` on every push to `main`.

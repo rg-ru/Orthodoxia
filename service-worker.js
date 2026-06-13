@@ -1,4 +1,4 @@
-const CACHE_NAME = "orthodoxia-v13";
+const CACHE_NAME = "orthodoxia-v14";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -22,8 +22,20 @@ const APP_SHELL = [
   "./src/shared/i18n.js?v=11",
   "./src/shared/i18n.js?v=12",
   "./src/shared/i18n.js?v=13",
+  "./src/shared/supabaseConfig.js",
+  "./src/shared/supabaseConfig.js?v=14",
+  "./src/shared/supabaseClient.js",
+  "./src/shared/supabaseClient.js?v=14",
   "./src/shared/html.js",
   "./src/shared/ui.js",
+  "./src/features/auth/data/AuthRepository.js",
+  "./src/features/auth/data/AuthRepository.js?v=14",
+  "./src/features/auth/domain/AuthSession.js",
+  "./src/features/auth/domain/AuthSession.js?v=14",
+  "./src/features/backend/data/OrthodoxiaBackendRepository.js",
+  "./src/features/backend/data/OrthodoxiaBackendRepository.js?v=14",
+  "./src/features/backend/domain/backendSchema.js",
+  "./src/features/backend/domain/backendSchema.js?v=14",
   "./src/features/home/data/homeData.js",
   "./src/features/home/data/homeData.js?v=9",
   "./src/features/home/domain/homeModel.js",
