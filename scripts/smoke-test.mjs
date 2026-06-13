@@ -60,6 +60,25 @@ for (const feature of requiredFeatures) {
 await assertFile("supabase/migrations/20260613000000_initial_schema.sql");
 await assertFile("supabase/README.md");
 
+for (const file of [
+  "mobile/pubspec.yaml",
+  "mobile/analysis_options.yaml",
+  "mobile/.env",
+  "mobile/.env.example",
+  "mobile/lib/main.dart",
+  "mobile/lib/app/app_config.dart",
+  "mobile/lib/features/auth/data/auth_repository.dart",
+  "mobile/lib/features/auth/domain/auth_failure.dart",
+  "mobile/lib/features/auth/domain/auth_status.dart",
+  "mobile/lib/features/auth/presentation/auth_gate.dart",
+  "mobile/lib/features/auth/presentation/login_screen.dart",
+  "mobile/lib/features/home/presentation/home_screen.dart",
+  "mobile/android/app/src/main/AndroidManifest.xml",
+  "mobile/ios/Runner/Info.plist"
+]) {
+  await assertFile(file);
+}
+
 const main = await readFile(join(root, "src/main.js"), "utf8");
 const routeCount = (main.match(/labelKey:/g) || []).length;
 if (routeCount !== 6) {
@@ -103,6 +122,62 @@ const settingsView = await readFile(join(root, "src/features/settings/presentati
 for (const marker of ["data-settings-section", "data-settings-back", "settings-section-card", "settings-subpage", "google-sign-in", "sign-out"]) {
   if (!settingsView.includes(marker)) {
     throw new Error(`Missing settings subpage marker ${marker}`);
+  }
+}
+
+const mobilePubspec = await readFile(join(root, "mobile/pubspec.yaml"), "utf8");
+for (const marker of ["supabase_flutter", "flutter_dotenv", "google_sign_in", ".env"]) {
+  if (!mobilePubspec.includes(marker)) {
+    throw new Error(`Missing Flutter pubspec marker ${marker}`);
+  }
+}
+
+const mobileEnv = await readFile(join(root, "mobile/.env"), "utf8");
+for (const marker of ["SUPABASE_URL", "SUPABASE_ANON_KEY", "txspopmkxaklvoufxmiz.supabase.co", "sb_publishable_jIAPtPMw9qM0urofEyYSWg_mJLztHPA"]) {
+  if (!mobileEnv.includes(marker)) {
+    throw new Error(`Missing Flutter env marker ${marker}`);
+  }
+}
+
+const mobileMain = await readFile(join(root, "mobile/lib/main.dart"), "utf8");
+for (const marker of ["dotenv.load", "Supabase.initialize", "AppConfig.fromEnvironment", "AuthRepository"]) {
+  if (!mobileMain.includes(marker)) {
+    throw new Error(`Missing Flutter main marker ${marker}`);
+  }
+}
+
+const mobileAuthRepository = await readFile(join(root, "mobile/lib/features/auth/data/auth_repository.dart"), "utf8");
+for (const marker of ["class AuthRepository", "signInWithGoogle", "signInWithOAuth", "signInWithIdToken", "signOut", "authStateChanges", "SocketException", "TimeoutException"]) {
+  if (!mobileAuthRepository.includes(marker)) {
+    throw new Error(`Missing Flutter auth repository marker ${marker}`);
+  }
+}
+
+const mobileAuthGate = await readFile(join(root, "mobile/lib/features/auth/presentation/auth_gate.dart"), "utf8");
+for (const marker of ["AuthGate", "currentSession", "LoginScreen", "HomeScreen", "authStateChanges"]) {
+  if (!mobileAuthGate.includes(marker)) {
+    throw new Error(`Missing Flutter auth gate marker ${marker}`);
+  }
+}
+
+const mobileLogin = await readFile(join(root, "mobile/lib/features/auth/presentation/login_screen.dart"), "utf8");
+for (const marker of ["Continue with Google", "Card", "AuthFailure", "Supabase"]) {
+  if (!mobileLogin.includes(marker)) {
+    throw new Error(`Missing Flutter login screen marker ${marker}`);
+  }
+}
+
+const mobileAndroidManifest = await readFile(join(root, "mobile/android/app/src/main/AndroidManifest.xml"), "utf8");
+for (const marker of ["INTERNET", "singleTask", "com.orthodoxia.app", "login-callback"]) {
+  if (!mobileAndroidManifest.includes(marker)) {
+    throw new Error(`Missing Flutter Android auth marker ${marker}`);
+  }
+}
+
+const mobileIosPlist = await readFile(join(root, "mobile/ios/Runner/Info.plist"), "utf8");
+for (const marker of ["CFBundleURLTypes", "com.orthodoxia.app", "Orthodoxia"]) {
+  if (!mobileIosPlist.includes(marker)) {
+    throw new Error(`Missing Flutter iOS auth marker ${marker}`);
   }
 }
 
