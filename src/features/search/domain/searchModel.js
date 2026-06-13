@@ -1,5 +1,5 @@
 import { readSearchHistory } from "../data/searchStorage.js";
-import { globalSearchService } from "./GlobalSearchService.js?v=12";
+import { globalSearchService } from "./GlobalSearchService.js?v=15";
 import { t } from "../../../shared/i18n.js?v=12";
 
 const groupOrder = ["bible", "saints", "prayers", "calendar"];

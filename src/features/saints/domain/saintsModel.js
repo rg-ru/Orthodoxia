@@ -1,18 +1,13 @@
 import { t } from "../../../shared/i18n.js";
-import { saintsData } from "../data/saintsData.js";
+import { saintRepository } from "../data/SaintRepository.js?v=15";
 
 export function getSaintsModel({
   language = "en",
   query = "",
   saintId = ""
 } = {}) {
-  const selectedSaint = saintsData.saints.find((saint) => saint.id === saintId) ?? null;
-  const searchQuery = query.trim().toLowerCase();
-  const filteredSaints = searchQuery
-    ? saintsData.saints.filter((saint) =>
-      `${saint.name} ${saint.feastDay} ${saint.summary} ${saint.quote}`.toLowerCase().includes(searchQuery)
-    )
-    : saintsData.saints;
+  const selectedSaint = saintRepository.getSaint(saintId);
+  const filteredSaints = saintRepository.search({ query });
 
   return {
     screen: selectedSaint ? "detail" : "list",
@@ -34,6 +29,8 @@ export function getSaintsModel({
     },
     query,
     saints: filteredSaints,
-    selectedSaint
+    selectedSaint,
+    categories: saintRepository.getCategories(),
+    status: saintRepository.getStatus()
   };
 }

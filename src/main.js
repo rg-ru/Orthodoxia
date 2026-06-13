@@ -2,11 +2,12 @@ import { renderHome } from "./features/home/presentation/homeView.js?v=9";
 import { renderCalendar } from "./features/calendar/presentation/calendarView.js";
 import { renderPrayerBook } from "./features/prayerBook/presentation/prayerBookView.js";
 import { renderBible } from "./features/bible/presentation/bibleView.js?v=11";
-import { renderSaints } from "./features/saints/presentation/saintsView.js";
+import { renderSaints } from "./features/saints/presentation/saintsView.js?v=15";
 import { renderAi } from "./features/ai/presentation/aiView.js?v=13";
 import { bibleRepository } from "./features/bible/data/BibleRepository.js?v=11";
+import { saintRepository } from "./features/saints/data/SaintRepository.js?v=15";
 import { chatService } from "./features/ai/domain/ChatService.js?v=13";
-import { renderSearch } from "./features/search/presentation/searchView.js?v=12";
+import { renderSearch } from "./features/search/presentation/searchView.js?v=15";
 import { clearSearchHistory, saveSearchQuery } from "./features/search/data/searchStorage.js?v=12";
 import { renderSettings } from "./features/settings/presentation/settingsView.js";
 import { getSettingsMessage, normalizePreferences, PREFERENCES_KEY } from "./features/settings/domain/settingsModel.js";
@@ -607,6 +608,12 @@ render();
 
 bibleRepository.loadLocalJson().then(() => {
   if (state.route === "bible" || state.route === "search") {
+    render();
+  }
+});
+
+saintRepository.loadLocalJson().then(() => {
+  if (state.route === "saints" || state.route === "search") {
     render();
   }
 });

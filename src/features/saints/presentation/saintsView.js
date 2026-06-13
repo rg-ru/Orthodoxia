@@ -1,4 +1,4 @@
-import { getSaintsModel } from "../domain/saintsModel.js";
+import { getSaintsModel } from "../domain/saintsModel.js?v=15";
 import { card, icon, pageHeading } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 

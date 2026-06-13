@@ -190,6 +190,34 @@ for (const marker of ["Saint Seraphim of Sarov", "Saint Mary of Egypt", "Saint J
   }
 }
 
+const saintsJson = await readFile(join(root, "src/features/saints/data/saints-local.json"), "utf8");
+for (const marker of ["orthodoxia-saints-v1", "\"short\"", "\"long\"", "\"category\"", "\"feastDay\""]) {
+  if (!saintsJson.includes(marker)) {
+    throw new Error(`Missing saints local JSON marker ${marker}`);
+  }
+}
+
+const saintModel = await readFile(join(root, "src/features/saints/domain/SaintModel.js"), "utf8");
+for (const marker of ["class SaintModel", "fromLocalJson", "fromSupabaseRow", "toSupabaseRow", "biographyShort", "biographyLong", "category"]) {
+  if (!saintModel.includes(marker)) {
+    throw new Error(`Missing SaintModel marker ${marker}`);
+  }
+}
+
+const saintDataSource = await readFile(join(root, "src/features/saints/data/SaintDataSource.js"), "utf8");
+for (const marker of ["class SaintDataSource", "loadLocalJson", "loadFromSupabase", "saints-local.json", "short_biography", "long_biography"]) {
+  if (!saintDataSource.includes(marker)) {
+    throw new Error(`Missing SaintDataSource marker ${marker}`);
+  }
+}
+
+const saintRepository = await readFile(join(root, "src/features/saints/data/SaintRepository.js"), "utf8");
+for (const marker of ["class SaintRepository", "loadLocalJson", "loadFromSupabase", "searchByName", "searchByFeastDay", "filterByCategory", "localStorage"]) {
+  if (!saintRepository.includes(marker)) {
+    throw new Error(`Missing SaintRepository marker ${marker}`);
+  }
+}
+
 const saintsView = await readFile(join(root, "src/features/saints/presentation/saintsView.js"), "utf8");
 for (const marker of ["data-saints-search", "data-saint-open", "data-saints-back", "saint-detail-card"]) {
   if (!saintsView.includes(marker)) {
@@ -233,6 +261,13 @@ for (const table of ["users", "saints", "prayers", "bible_books", "bible_chapter
 for (const marker of ["enable row level security", "handle_new_user", "on_auth_user_created", "item_type in ('saint', 'prayer', 'verse')", "auth.uid()"]) {
   if (!supabaseMigration.includes(marker)) {
     throw new Error(`Missing Supabase migration marker ${marker}`);
+  }
+}
+
+const saintsPipelineMigration = await readFile(join(root, "supabase/migrations/20260613001000_extend_saints_pipeline.sql"), "utf8");
+for (const marker of ["short_biography", "long_biography", "category", "saints_category_idx"]) {
+  if (!saintsPipelineMigration.includes(marker)) {
+    throw new Error(`Missing Saints pipeline migration marker ${marker}`);
   }
 }
 

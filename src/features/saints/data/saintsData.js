@@ -1,68 +1,90 @@
 export const saintsData = {
+  version: "orthodoxia-saints-v1",
+  source: "bundled",
   saints: [
     {
       id: "seraphim-sarov",
       name: "Saint Seraphim of Sarov",
       feastDay: "January 2",
-      summary: "A Russian elder remembered for prayer, humility, joy, and the counsel to acquire the Spirit of peace.",
+      category: "monk",
       iconName: "light_mode",
-      biography: [
-        "Saint Seraphim of Sarov lived as a monk, hermit, and spiritual father whose hidden prayer became a source of consolation for many.",
-        "His life was marked by ascetic struggle, silence, mercy toward visitors, and a radiant Paschal joy.",
-        "He taught that the purpose of Christian life is the acquisition of the Holy Spirit, and that peace of heart bears fruit for others."
-      ],
+      iconUrl: "",
+      biography: {
+        short: "A Russian elder remembered for prayer, humility, joy, and the counsel to acquire the Spirit of peace.",
+        long: [
+          "Saint Seraphim of Sarov lived as a monk, hermit, and spiritual father whose hidden prayer became a source of consolation for many.",
+          "His life was marked by ascetic struggle, silence, mercy toward visitors, and a radiant Paschal joy.",
+          "He taught that the purpose of Christian life is the acquisition of the Holy Spirit, and that peace of heart bears fruit for others."
+        ]
+      },
       quote: "Acquire the Spirit of peace, and thousands around you will be saved."
     },
     {
       id: "mary-egypt",
       name: "Saint Mary of Egypt",
       feastDay: "April 1",
-      summary: "A witness of repentance, desert struggle, mercy, and hope beyond despair.",
+      category: "ascetic",
       iconName: "landscape",
-      biography: [
-        "Saint Mary of Egypt is remembered as a profound icon of repentance and the healing mercy of God.",
-        "After a dramatic conversion in Jerusalem, she withdrew into the desert, where repentance became a lifetime of prayer.",
-        "Her life is read in Great Lent as a reminder that no wound is beyond the compassion of Christ."
-      ],
+      iconUrl: "",
+      biography: {
+        short: "A witness of repentance, desert struggle, mercy, and hope beyond despair.",
+        long: [
+          "Saint Mary of Egypt is remembered as a profound icon of repentance and the healing mercy of God.",
+          "After a dramatic conversion in Jerusalem, she withdrew into the desert, where repentance became a lifetime of prayer.",
+          "Her life is read in Great Lent as a reminder that no wound is beyond the compassion of Christ."
+        ]
+      },
       quote: "I am a sinful woman, but I flee to the mercy of God."
     },
     {
       id: "john-chrysostom",
       name: "Saint John Chrysostom",
       feastDay: "November 13",
-      summary: "A bishop and teacher known for Scripture, liturgy, almsgiving, and pastoral courage.",
+      category: "bishop",
       iconName: "history_edu",
-      biography: [
-        "Saint John Chrysostom served as Archbishop of Constantinople and became one of the Church's great preachers.",
-        "His teaching joined careful interpretation of Scripture with urgent concern for the poor and the life of the faithful.",
-        "He endured exile with courage, leaving the Church a legacy of homilies, letters, and liturgical memory."
-      ],
+      iconUrl: "",
+      biography: {
+        short: "A bishop and teacher known for Scripture, liturgy, almsgiving, and pastoral courage.",
+        long: [
+          "Saint John Chrysostom served as Archbishop of Constantinople and became one of the Church's great preachers.",
+          "His teaching joined careful interpretation of Scripture with urgent concern for the poor and the life of the faithful.",
+          "He endured exile with courage, leaving the Church a legacy of homilies, letters, and liturgical memory."
+        ]
+      },
       quote: "If you cannot find Christ in the beggar at the church door, you will not find Him in the chalice."
     },
     {
       id: "nina-georgia",
       name: "Saint Nina of Georgia",
       feastDay: "January 14",
-      summary: "Equal-to-the-Apostles, remembered for bringing the Christian faith to Georgia.",
+      category: "missionary",
       iconName: "church",
-      biography: [
-        "Saint Nina is honored as Equal-to-the-Apostles for her missionary witness among the people of Georgia.",
-        "With humility, prayer, and a cross woven from vine branches, she bore witness to Christ in a royal court and among ordinary people.",
-        "Her memory is tied to the conversion of Georgia and the quiet strength of faithful obedience."
-      ],
+      iconUrl: "",
+      biography: {
+        short: "Equal-to-the-Apostles, remembered for bringing the Christian faith to Georgia.",
+        long: [
+          "Saint Nina is honored as Equal-to-the-Apostles for her missionary witness among the people of Georgia.",
+          "With humility, prayer, and a cross woven from vine branches, she bore witness to Christ in a royal court and among ordinary people.",
+          "Her memory is tied to the conversion of Georgia and the quiet strength of faithful obedience."
+        ]
+      },
       quote: "The power of Christ is made known through humility and patient witness."
     },
     {
       id: "nicholas-myra",
       name: "Saint Nicholas of Myra",
       feastDay: "December 6",
-      summary: "A bishop remembered for pastoral care, defense of the faith, and generous mercy.",
+      category: "bishop",
       iconName: "volunteer_activism",
-      biography: [
-        "Saint Nicholas served as bishop of Myra and became beloved throughout the Church for mercy joined to courage.",
-        "He is remembered for defending the vulnerable, helping the poor in secret, and guarding the faith of the Church.",
-        "His life teaches that true authority is exercised as protection, generosity, and steadfast love."
-      ],
+      iconUrl: "",
+      biography: {
+        short: "A bishop remembered for pastoral care, defense of the faith, and generous mercy.",
+        long: [
+          "Saint Nicholas served as bishop of Myra and became beloved throughout the Church for mercy joined to courage.",
+          "He is remembered for defending the vulnerable, helping the poor in secret, and guarding the faith of the Church.",
+          "His life teaches that true authority is exercised as protection, generosity, and steadfast love."
+        ]
+      },
       quote: "The hands that give quietly bear witness to the mercy of God."
     }
   ]

@@ -31,6 +31,8 @@ It also enables Row Level Security on every public table and adds policies for:
 - authenticated user access to their own profile, favorites, notes, prayer lists, bookmarks, and settings
 - anonymous guest users through the normal authenticated role after `signInAnonymously()`
 
+The Saints pipeline migration adds `short_biography`, `long_biography`, and `category` to prepare the local JSON model for a future Supabase content migration.
+
 ## Supabase Auth Settings
 
 In the Supabase dashboard:

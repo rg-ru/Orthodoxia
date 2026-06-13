@@ -1,4 +1,4 @@
-import { getSearchModel } from "../domain/searchModel.js?v=12";
+import { getSearchModel } from "../domain/searchModel.js?v=15";
 import { card, icon, pageHeading } from "../../../shared/ui.js";
 import { escapeHtml } from "../../../shared/html.js";
 

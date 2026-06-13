@@ -2,7 +2,7 @@ import { bibleRepository } from "../../bible/data/BibleRepository.js?v=11";
 import { BibleSearchService } from "../../bible/domain/BibleSearchService.js?v=11";
 import { calendarData } from "../../calendar/data/calendarData.js";
 import { prayerData } from "../../prayerBook/data/prayerData.js";
-import { saintsData } from "../../saints/data/saintsData.js";
+import { saintRepository } from "../../saints/data/SaintRepository.js?v=15";
 import { getLocale } from "../../../shared/i18n.js?v=12";
 import { GlobalSearchResult } from "./GlobalSearchResult.js?v=12";
 
@@ -82,7 +82,8 @@ export class GlobalSearchService {
 
   ensureIndex(language) {
     const bibleStatus = bibleRepository.getStatus();
-    const nextIndexKey = `${language}:${bibleStatus.version}:${bibleStatus.source}`;
+    const saintsStatus = saintRepository.getStatus();
+    const nextIndexKey = `${language}:${bibleStatus.version}:${bibleStatus.source}:${saintsStatus.version}:${saintsStatus.source}`;
 
     if (nextIndexKey === this.indexKey) {
       return;
@@ -122,7 +123,7 @@ function searchBible(query) {
 }
 
 function buildSaintEntries() {
-  return saintsData.saints.map((saint) =>
+  return saintRepository.getSaints().map((saint) =>
     createEntry({
       id: `saints:${saint.id}`,
       group: "saints",
@@ -135,7 +136,7 @@ function buildSaintEntries() {
       payload: {
         saintId: saint.id
       },
-      searchText: `${saint.name} ${saint.feastDay} ${saint.summary} ${saint.biography.join(" ")} ${saint.quote}`
+      searchText: `${saint.name} ${saint.feastDay} ${saint.category} ${saint.summary} ${saint.biography.join(" ")} ${saint.quote}`
     })
   );
 }
